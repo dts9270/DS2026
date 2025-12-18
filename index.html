@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My RCM Business Tools</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            display: grid;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            border-left: 5px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        /* वेगळ्या रंगांसाठी */
+        .card.fwp { border-left-color: #3498db; }
+        .card.list { border-left-color: #2ecc71; }
+        .card.calc { border-left-color: #e67e22; }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            color: #777;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Team Unique Tools</h1>
+        <p style="margin: 5px 0 0 0; font-size: 0.9rem;">All-in-One Business Dashboard</p>
+    </header>
+
+    <div class="container">
+        
+        <a href="fwp/index.html" class="card fwp">
+            <div class="icon">📞</div>
+            <div class="title">Follow Up System (FWP)</div>
+            <div class="desc">तुमच्या टीम आणि ग्राहकांचे फॉलो-अप मॅनेज करा.</div>
+        </a>
+
+        <a href="List/index.html" class="card list">
+            <div class="icon">📝</div>
+            <div class="title">Smart List Maker</div>
+            <div class="desc">प्रोस्पेक्ट आणि संपर्कांची यादी बनवा.</div>
+        </a>
+
+        <a href="rcm-calculator/index.html" class="card calc">
+            <div class="icon">🧮</div>
+            <div class="title">RCM Calculator</div>
+            <div class="desc">बिझनेस व्हॉल्यूम आणि इन्कम हिशोब.</div>
+        </a>
+
+    </div>
+
+    <footer>
+        &copy; 2025 Team Unique | RCM Business
+    </footer>
+
+</body>
+</html>
