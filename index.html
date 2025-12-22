@@ -3,132 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My RCM Business Tools</title>
+    <title>RCM Super Business App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
+        body { margin: 0; padding: 0; font-family: sans-serif; overflow: hidden; background: #0f172a; }
+        #app-frame { width: 100%; height: 100vh; border: none; background: #fff; display: none; }
+        .menu-container { display: flex; flex-direction: column; height: 100vh; justify-content: center; align-items: center; gap: 20px; padding: 20px; }
+        .app-card { 
+            width: 100%; max-width: 400px; padding: 20px; border-radius: 16px; 
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; 
+            transition: transform 0.2s, background 0.2s; display: flex; align-items: center; gap: 15px;
+            color: white; text-align: left;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+        .app-card:hover { transform: scale(1.02); background: rgba(255, 255, 255, 0.2); }
+        .back-btn { 
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999; 
+            background: #ef4444; color: white; padding: 10px 20px; border-radius: 30px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; font-weight: bold; cursor: pointer;
+            display: none; display: flex; align-items: center; gap: 8px;
         }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 600px;
-            display: grid;
-            gap: 20px;
-            padding-bottom: 40px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-            color: #333;
-            border-left: 5px solid var(--primary-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        /* वेगळ्या रंगांसाठी */
-        .card.fwp { border-left-color: #3498db; }
-        .card.list { border-left-color: #2ecc71; }
-        .card.calc { border-left-color: #e67e22; }
-
-        .icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        .title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .desc {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            color: #777;
-            font-size: 0.8rem;
-        }
+        .logo-area { text-align: center; margin-bottom: 20px; color: white; }
+        h1 { font-size: 2rem; font-weight: 800; background: -webkit-linear-gradient(#eee, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Team Unique Tools</h1>
-        <p style="margin: 5px 0 0 0; font-size: 0.9rem;">All-in-One Business Dashboard</p>
-    </header>
+    <div id="main-menu" class="menu-container">
+        <div class="logo-area">
+            <h1>RCM बिझनेस हब</h1>
+            <p class="text-gray-400">सर्व टूल्स एकाच ठिकाणी</p>
+        </div>
 
-    <div class="container">
-        
-        <a href="fwp/index.html" class="card fwp">
-            <div class="icon">📞</div>
-            <div class="title">Follow Up System (FWP)</div>
-            <div class="desc">तुमच्या टीम आणि ग्राहकांचे फॉलो-अप मॅनेज करा.</div>
-        </a>
+        <button onclick="loadApp('marketing')" class="app-card group">
+            <div class="p-3 bg-pink-500 rounded-full shadow-lg group-hover:animate-pulse">
+                <i data-lucide="rocket" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold">डिजिटल मार्केटर</h3>
+                <p class="text-xs text-gray-300">WhatsApp Sender Tool</p>
+            </div>
+        </button>
 
-        <a href="List/index.html" class="card list">
-            <div class="icon">📝</div>
-            <div class="title">Smart List Maker</div>
-            <div class="desc">प्रोस्पेक्ट आणि संपर्कांची यादी बनवा.</div>
-        </a>
+        <button onclick="loadApp('calc')" class="app-card group">
+            <div class="p-3 bg-blue-500 rounded-full shadow-lg">
+                <i data-lucide="calculator" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold">RCM कॅल्क्युलेटर</h3>
+                <p class="text-xs text-gray-300">बचत आणि PV हिशोब</p>
+            </div>
+        </button>
 
-        <a href="rcm-calculator/index.html" class="card calc">
-            <div class="icon">🧮</div>
-            <div class="title">RCM Calculator</div>
-            <div class="desc">बिझनेस व्हॉल्यूम आणि इन्कम हिशोब.</div>
-        </a>
+        <button onclick="loadApp('crm1')" class="app-card group">
+            <div class="p-3 bg-indigo-500 rounded-full shadow-lg">
+                <i data-lucide="users" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold">Team Unique CRM</h3>
+                <p class="text-xs text-gray-300">नवीन प्रॉस्पेक्ट लिस्ट</p>
+            </div>
+        </button>
 
+        <button onclick="loadApp('crm2')" class="app-card group">
+            <div class="p-3 bg-green-500 rounded-full shadow-lg">
+                <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold">Sales Pro</h3>
+                <p class="text-xs text-gray-300">उधारी आणि फॉलोअप</p>
+            </div>
+        </button>
+
+        <button onclick="loadApp('inventory')" class="app-card group">
+            <div class="p-3 bg-amber-500 rounded-full shadow-lg">
+                <i data-lucide="package" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold">सामान व्यवस्थापन</h3>
+                <p class="text-xs text-gray-300">IN / OUT स्टॉक रिपोर्ट</p>
+            </div>
+        </button>
     </div>
 
-    <footer>
-        &copy; 2025 Team Unique | RCM Business
-    </footer>
+    <iframe id="app-frame"></iframe>
 
+    <button id="back-btn" class="back-btn" onclick="closeApp()">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> मुख्य मेनू
+    </button>
+
+    <script>
+        // Icons Init
+        lucide.createIcons();
+
+        // SOURCE CODES (Pasted from your inputs)
+        const apps = {
+            marketing: `<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RCM Tool</title><script src="https://cdn.tailwindcss.com"></`+`script><script src="https://unpkg.com/lucide@latest"></`+`script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></`+`script><style>body{font-family:sans-serif;background:#f8fafc}.glass-card{background:rgba(255,255,255,0.8);backdrop-filter:blur(12px)}</style></head><body class="bg-pink-50 p-4"><div class="max-w-4xl mx-auto"><h1 class="text-2xl font-bold text-pink-600 mb-4">🚀 RCM डिजिटल मार्केटर</h1><div class="grid gap-4 md:grid-cols-2"><div class="bg-white p-4 rounded-xl shadow"><input type="file" id="fileInput" accept=".xlsx" class="w-full mb-2"><textarea id="msgInput" class="w-full border p-2 rounded" rows="4" placeholder="मेसेज लिहा..."></textarea></div><div class="bg-white p-4 rounded-xl shadow overflow-y-auto h-96"><table class="w-full"><tbody id="tableBody"><tr><td class="text-center p-4">फाईल निवडा...</td></tr></tbody></table></div></div></div><script>let excelData=[];document.getElementById('fileInput').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){const d=new Uint8Array(e.target.result);const w=XLSX.read(d,{type:'array'});const j=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{header:1});excelData=j.slice(1).map(r=>({name:r[0],number:r[1],status:'pending'})).filter(i=>i.number);renderTable()};r.readAsArrayBuffer(f)});function sendWhatsApp(i){let d=excelData[i];let msg=document.getElementById('msgInput').value;let finalMsg=msg.includes("{name}")?msg.replace(/{name}/g,d.name):"नमस्कार "+d.name+" जी,\n\n"+msg;let num=d.number.toString().replace(/[^0-9]/g,'');if(num.length>=10)num='91'+num.slice(-10);window.open("https://wa.me/"+num+"?text="+encodeURIComponent(finalMsg),'_blank');d.status='sent';renderTable()}function renderTable(){let h='';excelData.forEach((d,i)=>{h+='<tr class="border-b"><td class="p-2 font-bold">'+d.name+'</td><td class="p-2">'+d.number+'</td><td class="p-2">'+(d.status=='sent'?'✅':'<button onclick="sendWhatsApp('+i+')" class="bg-green-500 text-white px-3 py-1 rounded">पाठवा</button>')+'</td></tr>'});document.getElementById('tableBody').innerHTML=h||'डेटा नाही';}</`+`script></body></html>`,
+            
+            calc: `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:sans-serif;background:#f0f9ff;padding:20px}.card{background:white;padding:20px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,0.1);max-width:500px;margin:auto}input,select{width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:5px}.btn{width:100%;padding:12px;background:#007bff;color:white;border:none;border-radius:5px;font-weight:bold;cursor:pointer}.res{margin-top:20px;padding:15px;background:#eef;border-radius:10px}</style></head><body><div class="card"><h2 style="text-align:center;color:#007bff">💰 RCM कॅल्क्युलेटर</h2><label>प्रॉडक्ट निवडा</label><select id="pSelect"><option value="0">-- निवडा --</option></select><input id="qty" type="number" value="1" placeholder="Qty"><button class="btn" onclick="add()">+ ऍड करा</button><div id="list" style="margin-top:10px"></div><div class="res"><h3>एकूण बचत: ₹<span id="save">0</span></h3><p>PV: <span id="pv">0</span></p></div><button class="btn" style="background:#28a745;margin-top:10px" onclick="share()">WhatsApp Share</button></div><script>let prods=[{n:"चहा",m:120,r:95,p:45},{n:"साबण",m:30,r:22,p:12},{n:"तेल (Health Guard)",m:190,r:165,p:75},{n:"टूथपेस्ट",m:65,r:52,p:28}];let cart=[];let sel=document.getElementById('pSelect');prods.forEach((p,i)=>sel.innerHTML+='<option value="'+i+'">'+p.n+'</option>');function add(){let i=sel.value;let q=document.getElementById('qty').value;if(i==0)return;let p=prods[i];cart.push({...p,q});render()}function render(){let h='',ts=0,tp=0;cart.forEach(c=>{let s=(c.m-c.r)*c.q;ts+=s;tp+=c.p*c.q;h+='<div><b>'+c.n+'</b> x '+c.q+' = ₹'+s+' बचत</div>'});document.getElementById('list').innerHTML=h;document.getElementById('save').innerText=ts;document.getElementById('pv').innerText=tp}function share(){let msg="RCM बचत रिपोर्ट:\\n";cart.forEach(c=>msg+=c.n+" x "+c.q+"\\n");msg+="एकूण बचत: ₹"+document.getElementById('save').innerText;window.open("https://wa.me/?text="+encodeURIComponent(msg))}</`+`script></body></html>`,
+            
+            crm1: `<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CRM</title><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></`+`script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></`+`script><style>body{font-family:sans-serif;background:#eee;padding:10px}.card{background:#fff;padding:15px;margin-bottom:10px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}.btn{padding:8px 15px;background:#2563eb;color:#fff;border:none;border-radius:5px}</style></head><body><h2 style="text-align:center">👥 Team Unique CRM</h2><div class="card"><input id="name" placeholder="नाव" style="width:100%;padding:8px;margin-bottom:5px"><input id="mobile" placeholder="मोबाईल" style="width:100%;padding:8px;margin-bottom:5px"><select id="status" style="width:100%;padding:8px;margin-bottom:10px"><option>New</option><option>Hot</option><option>Joined</option></select><button class="btn" onclick="save()">सेव्ह करा</button></div><div id="list">लोड होत आहे...</div><script>const firebaseConfig={apiKey:"AIzaSyB-AA1oAWceBEr6NCDbXATdpKdO8ks7jks",authDomain:"list-b182e.firebaseapp.com",projectId:"list-b182e",storageBucket:"list-b182e.firebasestorage.app",messagingSenderId:"996772285132",appId:"1:996772285132:web:cad03cafda172833f59069"};firebase.initializeApp(firebaseConfig);const db=firebase.firestore();function save(){let n=document.getElementById('name').value;let m=document.getElementById('mobile').value;let s=document.getElementById('status').value;if(!n)return alert('नाव टाका');db.collection('rcm_prospects').add({name:n,mobile:m,status:s,date:new Date()}).then(()=>{alert('सेव्ह झाले');location.reload()})}db.collection('rcm_prospects').orderBy('date','desc').get().then(s=>{let h='';s.forEach(d=>{let v=d.data();h+='<div class="card"><b>'+v.name+'</b> ('+v.status+')<br>📞 <a href="tel:'+v.mobile+'">'+v.mobile+'</a></div>'});document.getElementById('list').innerHTML=h||'डेटा नाही'})</`+`script></body></html>`,
+            
+            crm2: `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sales Pro</title><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></`+`script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></`+`script><style>body{font-family:sans-serif;background:#f3f4f6;padding:15px}.card{background:#fff;border-radius:10px;padding:15px;margin-bottom:10px;border-left:5px solid #2563eb;box-shadow:0 2px 4px rgba(0,0,0,0.1)}.btn{background:#2563eb;color:#fff;border:none;padding:5px 10px;border-radius:5px}</style></head><body><h2>📈 Sales & Followup</h2><div style="margin-bottom:15px"><input id="cname" placeholder="ग्राहक नाव" style="padding:8px;border:1px solid #ccc;border-radius:5px"> <input id="amt" placeholder="रक्कम" type="number" style="padding:8px;border:1px solid #ccc;border-radius:5px"> <button class="btn" onclick="add()">Add</button></div><div id="tasks">लोडिंग...</div><script>const fbc={apiKey:"AIzaSyAYfRLpyfVHNYFyTYZaSylGxyoW4UFH-yw",authDomain:"rcmcrm-5ad88.firebaseapp.com",projectId:"rcmcrm-5ad88",storageBucket:"rcmcrm-5ad88.firebasestorage.app",messagingSenderId:"172188965998",appId:"1:172188965998:web:33d65df1549fdb1acb1a7f"};firebase.initializeApp(fbc);const db=firebase.firestore();function add(){let n=document.getElementById('cname').value;let a=document.getElementById('amt').value;if(!n)return;db.collection('clients').add({name:n,amount:a,status:'Pending',timestamp:firebase.firestore.FieldValue.serverTimestamp()}).then(()=>location.reload())}db.collection('clients').orderBy('timestamp','desc').onSnapshot(s=>{let h='';s.forEach(d=>{let v=d.data();h+='<div class="card"><div style="display:flex;justify-content:space-between"><b>'+v.name+'</b><span style="color:red">₹'+v.amount+'</span></div><small>Status: '+v.status+'</small></div>'});document.getElementById('tasks').innerHTML=h})</`+`script></body></html>`,
+            
+            inventory: `<!DOCTYPE html><html lang="mr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Inventory</title><script src="https://cdn.tailwindcss.com"></`+`script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></`+`script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></`+`script></head><body class="p-4 bg-orange-50"><h2 class="text-xl font-bold text-amber-700 mb-4">📦 सामान व्यवस्थापन</h2><div class="bg-white p-4 rounded shadow mb-4"><div class="flex gap-2 mb-2"><input id="item" placeholder="वस्तूचे नाव" class="border p-2 w-full"><input id="price" type="number" placeholder="किंमत" class="border p-2 w-24"></div><div class="flex gap-2"><button onclick="save('IN')" class="flex-1 bg-green-600 text-white p-2 rounded">IN (आले)</button><button onclick="save('OUT')" class="flex-1 bg-red-600 text-white p-2 rounded">OUT (गेले)</button></div></div><div id="logs" class="space-y-2"></div><script>const fc={apiKey:"AIzaSyA3PdBavWlcE3w3QjgyOykv2jkAuFcUWbY",authDomain:"product-buy-sell.firebaseapp.com",projectId:"product-buy-sell",storageBucket:"product-buy-sell.appspot.com",messagingSenderId:"815213852798",appId:"1:815213852798:web:d347aec03aa3a46ba3802f"};firebase.initializeApp(fc);const db=firebase.firestore();function save(type){let i=document.getElementById('item').value;let p=document.getElementById('price').value;if(!i)return;db.collection('inventory_logs').add({item:i,price:p,type:type,time:new Date()}).then(()=>{alert('सेव्ह झाले');location.reload()})}db.collection('inventory_logs').orderBy('time','desc').limit(10).get().then(s=>{let h='';s.forEach(d=>{let v=d.data();let c=v.type=='IN'?'text-green-600':'text-red-600';h+='<div class="bg-white p-2 rounded shadow flex justify-between"><span>'+v.item+'</span><span class="font-bold '+c+'">'+v.type+' ₹'+v.price+'</span></div>'});document.getElementById('logs').innerHTML=h||'डेटा नाही'})</`+`script></body></html>`
+        };
+
+        function loadApp(appName) {
+            const frame = document.getElementById('app-frame');
+            const menu = document.getElementById('main-menu');
+            const backBtn = document.getElementById('back-btn');
+
+            menu.style.display = 'none';
+            frame.style.display = 'block';
+            backBtn.style.display = 'flex';
+
+            // Inject the code into iframe
+            frame.srcdoc = apps[appName];
+        }
+
+        function closeApp() {
+            const frame = document.getElementById('app-frame');
+            const menu = document.getElementById('main-menu');
+            const backBtn = document.getElementById('back-btn');
+
+            frame.style.display = 'none';
+            frame.srcdoc = ''; // Clear memory
+            backBtn.style.display = 'none';
+            menu.style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
