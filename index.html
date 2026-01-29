@@ -49,23 +49,13 @@
         .nav-pills-custom .nav-link { padding: 5px 10px; font-size: 0.85rem; margin: 0 2px; background: white; color: var(--primary); font-weight: 600; }
         .nav-pills-custom .nav-link.active { background: var(--primary); color: white; transform: scale(1.02); }
         
-        /* COMPACT TABLE STYLES */
         .compact-table th, .compact-table td {
-            padding: 4px 6px !important; /* Very tight spacing */
-            font-size: 12px; /* Small font */
-            vertical-align: middle;
-            line-height: 1.2;
+            padding: 4px 6px !important; font-size: 12px; vertical-align: middle; line-height: 1.2;
         }
         .compact-table th { background-color: #f0f0f0; }
-        .btn-xs {
-            padding: 1px 5px;
-            font-size: 10px;
-            border-radius: 4px;
-        }
+        .btn-xs { padding: 1px 5px; font-size: 10px; border-radius: 4px; }
         
-        .form-control-sm-custom {
-            padding: 5px; font-size: 13px; border-radius: 6px;
-        }
+        .form-control-sm-custom { padding: 5px; font-size: 13px; border-radius: 6px; }
         label.small-label { font-size: 11px; font-weight: bold; margin-bottom: 1px; color: #444; }
     </style>
 </head>
@@ -183,8 +173,50 @@
                 <div class="tab-pane fade" id="sub-sales">
                     <div class="custom-card p-3 border-top border-3 border-success">
                         <div class="row g-2">
-                            <div class="col-12"><select id="salePersonSelect" class="form-select form-control-sm-custom"></select></div>
-                            <div class="col-12"><select id="productSelect" class="form-select form-control-sm-custom"><option value="none">Product...</option><option value="oil_1l">1L Oil</option><option value="oil_5l">5L Oil</option><option value="nutri_woman">Nutri Woman</option></select></div>
+                            <div class="col-12">
+                                <label class="small-label">ग्राहक:</label>
+                                <select id="salePersonSelect" class="form-select form-control-sm-custom"></select>
+                            </div>
+                            <div class="col-12">
+                                <label class="small-label">प्रॉडक्ट (Sheet मधून):</label>
+                                <select id="productSelect" class="form-select form-control-sm-custom">
+                                    <option value="none">-- प्रॉडक्ट निवडा --</option>
+                                    <option value="राईस ब्रान तेल 5 लिटर">राईस ब्रान तेल 5 लिटर</option>
+                                    <option value="मीठ 1 किलो">मीठ 1 किलो</option>
+                                    <option value="चहा पावडर 500 ग्रॅम">चहा पावडर 500 ग्रॅम</option>
+                                    <option value="मिरची पावडर 200 ग्रॅम">मिरची पावडर 200 ग्रॅम</option>
+                                    <option value="जिरे 100 ग्रॅम">जिरे 100 ग्रॅम</option>
+                                    <option value="हळद पावडर 200 ग्रॅम">हळद पावडर 200 ग्रॅम</option>
+                                    <option value="अंगाचे साबण">अंगाचे साबण</option>
+                                    <option value="खोबरेल तेल 250ml">खोबरेल तेल 250ml</option>
+                                    <option value="पेस्ट 100 ग्रॅम">पेस्ट 100 ग्रॅम</option>
+                                    <option value="साबण 100 ग्रॅम">साबण 100 ग्रॅम</option>
+                                    <option value="पावडर 150 ग्रॅम">पावडर 150 ग्रॅम</option>
+                                    <option value="ग्लो अँड लव्हल क्रीम 50 ग्रॅम">ग्लो अँड लव्हल क्रीम 50 ग्रॅम</option>
+                                    <option value="क्रीम 30 ग्रॅम">क्रीम 30 ग्रॅम</option>
+                                    <option value="धने पावडर 200 ग्रॅम">धने पावडर 200 ग्रॅम</option>
+                                    <option value="मसाला 100 ग्रॅम">मसाला 100 ग्रॅम</option>
+                                    <option value="अगरबत्ती 150 ग्रॅम">अगरबत्ती 150 ग्रॅम</option>
+                                    <option value="हेल्थ गार्ड राईस ब्रॅन ऑईल 1500 gm">हेल्थ गार्ड राईस ब्रॅन ऑईल 1500 gm</option>
+                                    <option value="टॉयलेट क्लिनर">टॉयलेट क्लिनर</option>
+                                    <option value="टूथब्रश">टूथब्रश</option>
+                                    <option value="शॅम्पू 80ml">शॅम्पू 80ml</option>
+                                    <option value="न्यूट्रिलाइट">न्यूट्रिलाइट</option>
+                                    <option value="कॉफी 50 ग्रॅम">कॉफी 50 ग्रॅम</option>
+                                    <option value="वॉशिंग पावडर 1 किलो">वॉशिंग पावडर 1 किलो</option>
+                                    <option value="साबण 110 ग्रॅम">साबण 110 ग्रॅम</option>
+                                    <option value="ग्लास क्लिनर 500ml">ग्लास क्लिनर 500ml</option>
+                                    <option value="फरशी क्लिनर 500ml">फरशी क्लिनर 500ml</option>
+                                    <option value="पंचतुलसी ड्रॉप 30ml">पंचतुलसी ड्रॉप 30ml</option>
+                                    <option value="फुट केअर क्रीम 50 ग्रॅम">फुट केअर क्रीम 50 ग्रॅम</option>
+                                    <option value="बॉडी लोशन 200ml">बॉडी लोशन 200ml</option>
+                                    <option value="हँड वॉश 300ml">हँड वॉश 300ml</option>
+                                    <option value="दंतमंजन 75 ग्रॅम">दंतमंजन 75 ग्रॅम</option>
+                                    <option value="डिश वॉश 500ml">डिश वॉश 500ml</option>
+                                    <option value="nutricharge woman">Nutricharge Woman</option>
+                                    <option value="फेस वॉश">फेस वॉश</option>
+                                </select>
+                            </div>
                             <div class="col-6"><input type="date" id="saleDate" class="form-control form-control-sm-custom"></div>
                             <div class="col-6"><button class="btn btn-success btn-sm w-100" onclick="addSale()">Sale Entry</button></div>
                         </div>
@@ -399,7 +431,12 @@
         if(idx === "" || prod === "none") { alert("Select Customer & Product"); return; }
         const p = db.projects[db.currentProject].people[idx]; const date = document.getElementById('saleDate').value;
         let dates = []; let base = new Date(date); const addD = (n) => { let d = new Date(base); d.setDate(base.getDate()+n); return d.toISOString().split('T')[0]; };
-        if(prod === 'oil_1l') dates.push(addD(5)); if(prod === 'oil_5l') { dates.push(addD(15)); dates.push(addD(25)); } if(prod === 'nutri_woman') { dates.push(addD(7)); dates.push(addD(15)); dates.push(addD(25)); }
+        
+        // Auto Reminders Logic
+        if(prod.includes("5 लिटर") || prod.includes("500ml") || prod.includes("500 ग्रॅम") || prod.includes("1 किलो")) { dates.push(addD(15)); dates.push(addD(25)); }
+        else if(prod.includes("nutri") || prod.includes("न्यूट्रिलाइट")) { dates.push(addD(7)); dates.push(addD(15)); dates.push(addD(25)); }
+        else { dates.push(addD(5)); }
+
         db.projects[db.currentProject].followups.push({ personName: p.name, mobile: p.mobile, remark: `Auto: ${prod} Sale`, dates: dates, entryDate: date });
         db.projects[db.currentProject].sales.push({ personName: p.name, product: prod, date });
         saveToFirebase(); alert("Sale Saved!");
