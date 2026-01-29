@@ -31,38 +31,40 @@
             display: flex; justify-content: center; align-items: center; flex-direction: column;
         }
         .app-header {
-            background: rgba(255, 255, 255, 0.95); padding: 15px 0; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 15px; border-radius: 0 0 20px 20px;
+            background: rgba(255, 255, 255, 0.95); padding: 10px 0; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; border-radius: 0 0 15px 15px;
         }
         .mini-stat-card {
-            background: white; border-radius: 12px; padding: 10px; text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-bottom: 4px solid #ddd;
+            background: white; border-radius: 8px; padding: 5px; text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-bottom: 3px solid #ddd;
         }
-        .border-blue { border-bottom-color: var(--primary); color: var(--primary); }
-        .border-saffron { border-bottom-color: var(--saffron); color: var(--saffron); }
-        .border-green { border-bottom-color: var(--green); color: var(--green); }
+        .border-blue { border-color: var(--primary); color: var(--primary); }
+        .border-saffron { border-color: var(--saffron); color: var(--saffron); }
+        .border-green { border-color: var(--green); color: var(--green); }
+
+        .custom-card { background: var(--card-bg); border-radius: 12px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
-        .custom-card { 
-            background: var(--card-bg); border-radius: 16px; border: none; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); margin-bottom: 20px; 
-        }
-        
-        /* BIGGER INPUTS STYLE */
-        .form-label { font-weight: 600; color: #444; margin-bottom: 2px; }
+        /* --- BIG INPUTS (FORM) --- */
+        .form-label { font-weight: 600; color: #333; margin-bottom: 2px; font-size: 14px; }
         .form-control, .form-select { 
-            padding: 10px; font-size: 16px; border-radius: 8px; /* Big Inputs */
+            padding: 10px; font-size: 15px; border-radius: 8px; /* Comfortable size */
             border: 1px solid #ccc;
         }
         .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,128,0.1); }
+        .btn-big { padding: 10px; font-size: 16px; font-weight: bold; width: 100%; border-radius: 8px; }
 
-        .btn-custom { padding: 10px; font-size: 16px; font-weight: bold; border-radius: 8px; color: white; border: none; }
-        
-        .nav-pills-custom .nav-link { 
-            padding: 8px 15px; font-size: 1rem; margin: 0 5px; 
-            background: white; color: var(--primary); font-weight: 600; 
-            border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* --- COMPACT TABLE (LIST) --- */
+        .compact-table th, .compact-table td {
+            padding: 4px 6px !important; /* Tight spacing */
+            font-size: 12px; /* Small font */
+            vertical-align: middle;
+            line-height: 1.2;
         }
-        .nav-pills-custom .nav-link.active { background: var(--primary); color: white; transform: scale(1.05); }
+        .compact-table th { background-color: #f0f0f0; color: #333; font-weight: 600; }
+        .btn-xs { padding: 2px 6px; font-size: 11px; border-radius: 4px; }
+        
+        .nav-pills-custom .nav-link { padding: 6px 12px; font-size: 0.9rem; margin: 0 2px; background: white; color: var(--primary); font-weight: 600; }
+        .nav-pills-custom .nav-link.active { background: var(--primary); color: white; transform: scale(1.02); }
     </style>
 </head>
 <body>
@@ -75,51 +77,51 @@
 <header class="app-header">
     <div class="container d-flex justify-content-between align-items-center">
         <div>
-            <h4 class="mb-0 fw-bold text-primary" style="text-transform: uppercase;"><i class="fas fa-flag-checkered text-danger"></i> क्रांतिकारी वर्ष 2026</h4>
+            <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-flag-checkered text-danger"></i> क्रांती 2026</h5>
             <small class="text-dark fw-bold">Deepak Shengule | Mission</small>
         </div>
-        <span class="badge bg-white text-dark border p-2 rounded-pill shadow-sm" id="statusBadge">🔴 Connecting...</span>
+        <span class="badge bg-white text-dark border px-2 py-1" id="statusBadge">🔴 Connecting...</span>
     </div>
 </header>
 
-<div class="container">
+<div class="container px-2">
     
-    <div id="reminderSection" class="alert alert-danger shadow-sm mb-3" style="display:none;">
-        <strong><i class="fas fa-bell"></i> रिमांइडर्स:</strong> <div id="reminderList" class="mt-1"></div>
+    <div id="reminderSection" class="alert alert-danger p-2 mb-2 shadow-sm" style="display:none; font-size: 0.85rem;">
+        <strong><i class="fas fa-bell"></i> रिमांइडर्स:</strong> <span id="reminderList"></span>
     </div>
 
-    <div class="row g-2 mb-3">
-        <div class="col-4"><div class="mini-stat-card border-blue"><h3 id="topTotal">0</h3><small>Total List</small></div></div>
+    <div class="row g-1 mb-2">
+        <div class="col-4"><div class="mini-stat-card border-blue"><h3 id="topTotal">0</h3><small>Total</small></div></div>
         <div class="col-4"><div class="mini-stat-card border-saffron"><h3 id="topFollow">0</h3><small>FollowUps</small></div></div>
         <div class="col-4"><div class="mini-stat-card border-green"><h3 id="topSales">0</h3><small>Sales</small></div></div>
     </div>
 
-    <ul class="nav nav-pills nav-pills-custom justify-content-center mb-3" id="mainTabs">
+    <ul class="nav nav-pills nav-pills-custom justify-content-center mb-2" id="mainTabs">
         <li class="nav-item"><button class="nav-link active" onclick="switchProject('health')">आरोग्य</button></li>
         <li class="nav-item"><button class="nav-link" onclick="switchProject('anemia')">ॲनिमिया</button></li>
         <li class="nav-item"><button class="nav-link" onclick="switchProject('water')">जलसंचय</button></li>
         <li class="nav-item"><button class="nav-link" onclick="switchProject('network')">नेटवर्क</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="switchProject('reports')">डाउनलोड</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="switchProject('reports')"><i class="fas fa-download"></i></button></li>
     </ul>
 
     <div id="contentArea">
         <div id="projectArea">
-            <div class="text-center mb-3"><span class="badge bg-primary fs-6" id="currentProjectTitle">Title</span></div>
+            <div class="text-center mb-2"><span class="badge bg-primary fs-6" id="currentProjectTitle">Title</span></div>
 
-            <div class="custom-card p-2 mb-3">
+            <div class="custom-card p-1 mb-2">
                 <ul class="nav nav-pills nav-fill" id="subTabs" role="tablist">
-                    <li class="nav-item"><button class="nav-link active text-dark" data-bs-toggle="pill" data-bs-target="#sub-list">📋 लिस्ट ॲड</button></li>
-                    <li class="nav-item"><button class="nav-link text-dark" data-bs-toggle="pill" data-bs-target="#sub-followup">📞 फॉलो-अप</button></li>
-                    <li class="nav-item"><button class="nav-link text-dark" data-bs-toggle="pill" data-bs-target="#sub-sales">🛒 विक्री</button></li>
+                    <li class="nav-item"><button class="nav-link active text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-list">📋 लिस्ट</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-followup">📞 फॉलो-अप</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-sales">🛒 विक्री</button></li>
                 </ul>
             </div>
 
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="sub-list">
-                    <div class="custom-card p-4 border-top border-4 border-primary">
+                    <div class="custom-card p-3 border-top border-4 border-primary">
                         <div class="row g-3">
-                            <div class="col-12 bg-light p-3 rounded border border-primary">
-                                <label class="fw-bold text-primary"><i class="fas fa-sync"></i> Smart Import (इतर लिस्ट मधून):</label>
+                            <div class="col-12 bg-light p-2 rounded border border-primary">
+                                <label class="fw-bold text-primary small"><i class="fas fa-sync"></i> Smart Import (फक्त नवीन नावे):</label>
                                 <select id="importSelect" class="form-select mt-1" onchange="fillFromImport()">
                                     <option value="">-- नाव निवडा --</option>
                                 </select>
@@ -135,42 +137,41 @@
                                 <label class="form-label">नाव (Name) *</label>
                                 <input type="text" id="pName" class="form-control" placeholder="पूर्ण नाव">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label">मोबाईल (Mobile) *</label>
-                                <input type="number" id="pMobile" class="form-control" placeholder="10 अंकी नंबर">
+                            <div class="col-6">
+                                <label class="form-label">मोबाईल *</label>
+                                <input type="number" id="pMobile" class="form-control" placeholder="Mobile">
                             </div>
-                            
                             <div class="col-6">
                                 <label class="form-label">गाव (Village)</label>
                                 <input type="text" id="pVillage" class="form-control" placeholder="गाव">
                             </div>
                             <div class="col-6">
                                 <label class="form-label">व्यवसाय</label>
-                                <input type="text" id="pProfession" class="form-control" placeholder="उदा. शेती">
+                                <input type="text" id="pProfession" class="form-control" placeholder="Business">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label">प्रपोजर (Proposer)</label>
-                                <input type="text" id="pProposer" class="form-control" placeholder="कोणामार्फत?">
+                            <div class="col-6">
+                                <label class="form-label">प्रपोजर</label>
+                                <input type="text" id="pProposer" class="form-control" placeholder="Ref By">
                             </div>
                             
                             <div class="col-12 mt-3">
-                                <button id="saveBtn" class="btn btn-custom w-100" style="background:var(--primary);" onclick="addPerson()">
-                                    SAVE DATA (सेव्ह करा)
+                                <button id="saveBtn" class="btn btn-primary btn-big shadow" onclick="addPerson()">
+                                    SAVE DATA
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     <div class="custom-card">
-                        <div class="p-3 bg-light border-bottom fw-bold">सेव केलेली लिस्ट (Newest First)</div>
-                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table class="table table-striped table-bordered mb-0 align-middle">
-                                <thead class="table-light sticky-top">
+                        <div class="p-2 bg-light border-bottom small fw-bold text-center">सेव केलेली लिस्ट (Compact View)</div>
+                        <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+                            <table class="table table-striped table-bordered mb-0 compact-table table-sm">
+                                <thead class="sticky-top bg-light">
                                     <tr>
-                                        <th>नाव</th>
-                                        <th>गाव</th>
-                                        <th>मोबाईल</th>
-                                        <th>कृती</th>
+                                        <th style="width:30%">नाव</th>
+                                        <th style="width:20%">गाव</th>
+                                        <th style="width:25%">मोबाईल</th>
+                                        <th style="width:25%">कृती</th>
                                     </tr>
                                 </thead>
                                 <tbody id="personTableBody"></tbody>
@@ -180,35 +181,33 @@
                 </div>
 
                 <div class="tab-pane fade" id="sub-followup">
-                    <div class="custom-card p-4 border-top border-4 border-warning">
+                    <div class="custom-card p-3 border-top border-4 border-warning">
                         <label class="form-label">व्यक्ती निवडा:</label>
-                        <select id="followupPersonSelect" class="form-select mb-3"></select>
-                        
+                        <select id="followupPersonSelect" class="form-select mb-2"></select>
                         <label class="form-label">चर्चा (Remark):</label>
-                        <textarea id="fRemark" class="form-control mb-3" rows="2" placeholder="आज काय बोलणे झाले..."></textarea>
-                        
-                        <label class="form-label text-primary fw-bold">पुढील ३ तारखा (Next 3 Reminders):</label>
-                        <div class="d-flex gap-2 mb-3">
+                        <input type="text" id="fRemark" class="form-control mb-2" placeholder="Remark...">
+                        <label class="form-label text-primary">पुढील ३ तारखा:</label>
+                        <div class="d-flex gap-1 mb-3">
                             <input type="date" id="fDate1" class="form-control">
                             <input type="date" id="fDate2" class="form-control">
                             <input type="date" id="fDate3" class="form-control">
                         </div>
-                        <button class="btn btn-custom w-100" style="background:var(--saffron);" onclick="addFollowup()">Save Reminder</button>
+                        <button class="btn btn-warning w-100 text-white fw-bold py-2" onclick="addFollowup()">Save Reminder</button>
                     </div>
-                    <div class="custom-card p-3" id="followupHistoryList" style="max-height: 500px; overflow-y: auto;"></div>
+                    <div class="custom-card p-2" id="followupHistoryList" style="max-height: 50vh; overflow-y: auto; font-size: 12px;"></div>
                 </div>
 
                 <div class="tab-pane fade" id="sub-sales">
-                    <div class="custom-card p-4 border-top border-4 border-success">
+                    <div class="custom-card p-3 border-top border-4 border-success">
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">ग्राहक:</label>
                                 <select id="salePersonSelect" class="form-select"></select>
                             </div>
                             <div class="col-12">
-                                <label class="form-label">प्रॉडक्ट निवडा:</label>
+                                <label class="form-label">प्रॉडक्ट:</label>
                                 <select id="productSelect" class="form-select">
-                                    <option value="none">-- प्रॉडक्ट --</option>
+                                    <option value="none">-- प्रॉडक्ट निवडा --</option>
                                     <option value="राईस ब्रान तेल 5 लिटर">राईस ब्रान तेल 5 लिटर</option>
                                     <option value="मीठ 1 किलो">मीठ 1 किलो</option>
                                     <option value="चहा पावडर 500 ग्रॅम">चहा पावडर 500 ग्रॅम</option>
@@ -250,21 +249,21 @@
                                 <input type="date" id="saleDate" class="form-control">
                             </div>
                             <div class="col-6 d-flex align-items-end">
-                                <button class="btn btn-custom w-100" style="background:var(--green);" onclick="addSale()">विक्री Save</button>
+                                <button class="btn btn-success w-100 fw-bold py-2" onclick="addSale()">Sale Entry</button>
                             </div>
                         </div>
                     </div>
-                    <div id="salesList" class="p-2"></div>
+                    <div id="salesList" class="p-2" style="font-size: 12px;"></div>
                 </div>
             </div>
         </div>
 
         <div id="masterReportsArea" style="display:none;">
-            <div class="custom-card p-5 text-center">
-                <h3 class="mb-4 text-primary">डेटा डाउनलोड</h3>
-                <div class="d-flex justify-content-center gap-3 mb-4">
-                    <button class="btn btn-success btn-lg shadow" onclick="downloadExcel()"><i class="fas fa-file-excel me-2"></i> Excel</button>
-                    <button class="btn btn-danger btn-lg shadow" onclick="downloadPDF()"><i class="fas fa-file-pdf me-2"></i> PDF</button>
+            <div class="custom-card p-4 text-center">
+                <h5>Download Data</h5>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <button class="btn btn-success btn-sm" onclick="downloadExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+                    <button class="btn btn-danger btn-sm" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
                 </div>
             </div>
             <table class="table d-none" id="exportTable"><thead><tr><th>Abhiyan</th><th>Name</th><th>Village</th><th>Mobile</th><th>Proposer</th><th>Sales</th></tr></thead><tbody id="exportTableBody"></tbody></table>
@@ -347,27 +346,28 @@
             selF.innerHTML += opt; selS.innerHTML += opt;
         });
 
+        // Compact Table Row
         proj.people.map((p, i) => ({...p, oIdx: i})).reverse().forEach(p => {
             tbody.innerHTML += `<tr>
-                <td class="fw-bold">${p.name}</td>
+                <td class="fw-bold text-primary">${p.name}</td>
                 <td>${p.village}</td>
                 <td>${p.mobile}</td>
                 <td class="text-center">
-                    <button class="btn btn-sm btn-warning mb-1" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
-                    <a href="https://wa.me/91${p.mobile}" class="btn btn-sm btn-success mb-1"><i class="fab fa-whatsapp"></i></a>
-                    <button class="btn btn-sm btn-danger mb-1" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-xs btn-warning" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
+                    <a href="https://wa.me/91${p.mobile}" class="btn btn-xs btn-success"><i class="fab fa-whatsapp"></i></a>
+                    <button class="btn btn-xs btn-danger" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
         });
 
         const fList = document.getElementById('followupHistoryList'); fList.innerHTML = '';
         proj.followups.slice().reverse().forEach(f => {
-            fList.innerHTML += `<div class="p-3 mb-2 bg-light border-start border-4 border-warning rounded"><strong>${f.personName}</strong>: ${f.remark} <span class="float-end text-muted small">${f.entryDate}</span></div>`;
+            fList.innerHTML += `<div class="p-2 mb-1 bg-light border-start border-3 border-warning rounded"><strong>${f.personName}</strong>: ${f.remark} <span class="float-end text-muted small">${f.entryDate}</span></div>`;
         });
 
         const sList = document.getElementById('salesList'); sList.innerHTML = '';
         proj.sales.slice().reverse().forEach(s => {
-            sList.innerHTML += `<div class="p-3 mb-2 bg-light border-start border-4 border-success rounded"><strong>${s.personName}</strong>: ${s.product} <span class="float-end text-muted small">${s.date}</span></div>`;
+            sList.innerHTML += `<div class="p-2 mb-1 bg-light border-start border-3 border-success rounded"><strong>${s.personName}</strong>: ${s.product} <span class="float-end text-muted small">${s.date}</span></div>`;
         });
 
         loadImportOptions();
@@ -437,15 +437,15 @@
         document.getElementById('pProposer').value = p.proposer;
         editIndex = idx;
         const btn = document.getElementById('saveBtn');
-        btn.innerText = "UPDATE"; btn.classList.replace('btn-custom','btn-warning');
-        document.getElementById('sub-list').scrollIntoView();
+        btn.innerText = "UPDATE DATA"; btn.classList.replace('btn-primary','btn-warning');
+        document.getElementById('sub-list').scrollIntoView({ behavior: 'smooth' });
     }
 
     function resetForm() {
         ['pName','pMobile','pVillage','pProfession','pProposer'].forEach(id => document.getElementById(id).value = '');
         editIndex = null;
         const btn = document.getElementById('saveBtn');
-        btn.innerText = "SAVE DATA"; btn.classList.replace('btn-warning','btn-custom');
+        btn.innerText = "SAVE DATA"; btn.classList.replace('btn-warning','btn-primary');
     }
 
     window.delPerson = function(idx) { if(confirm("Delete?")) { db.projects[db.currentProject].people.splice(idx, 1); saveToFirebase(); } }
@@ -465,7 +465,6 @@
         const p = db.projects[db.currentProject].people[idx]; const date = document.getElementById('saleDate').value;
         let dates = []; let base = new Date(date); const addD = (n) => { let d = new Date(base); d.setDate(base.getDate()+n); return d.toISOString().split('T')[0]; };
         
-        // Auto Reminders Logic
         if(prod.includes("5 लिटर") || prod.includes("500ml") || prod.includes("500 ग्रॅम") || prod.includes("1 किलो")) { dates.push(addD(15)); dates.push(addD(25)); }
         else if(prod.includes("nutri") || prod.includes("न्यूट्रिलाइट")) { dates.push(addD(7)); dates.push(addD(15)); dates.push(addD(25)); }
         else { dates.push(addD(5)); }
