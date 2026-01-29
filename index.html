@@ -7,7 +7,7 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -18,171 +18,196 @@
     <style>
         :root {
             --primary: #000080; --saffron: #FF9933; --green: #138808;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.98);
         }
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%);
-            background-attachment: fixed; min-height: 100vh; padding-bottom: 50px;
+            background-attachment: fixed; min-height: 100vh; padding-bottom: 30px;
         }
         #loadingOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255,255,255,0.95); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
         }
         .app-header {
-            background: rgba(255, 255, 255, 0.95); padding: 15px 0; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); margin-bottom: 15px; border-radius: 0 0 20px 20px;
+            background: rgba(255, 255, 255, 0.95); padding: 10px 0; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; border-radius: 0 0 15px 15px;
         }
         .mini-stat-card {
-            background: white; border-radius: 12px; padding: 10px; text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-bottom: 4px solid #ddd;
+            background: white; border-radius: 8px; padding: 5px; text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-bottom: 3px solid #ddd;
         }
-        .border-blue { border-bottom-color: var(--primary); color: var(--primary); }
-        .border-saffron { border-bottom-color: var(--saffron); color: var(--saffron); }
-        .border-green { border-bottom-color: var(--green); color: var(--green); }
-        .custom-card { background: var(--card-bg); border-radius: 16px; border: none; box-shadow: 0 8px 16px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .nav-pills-custom .nav-link.active { background: var(--primary); color: white; transform: scale(1.05); }
-        .nav-pills-custom .nav-link { background: white; color: var(--primary); margin: 0 5px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .btn-custom { border-radius: 8px; color: white; border: none; font-weight: 500; }
-        .form-control { border-radius: 10px; }
+        .mini-stat-card h3 { margin: 0; font-size: 1.2rem; font-weight: bold; }
+        .mini-stat-card small { font-size: 0.65rem; font-weight: bold; color: #555; }
+        
+        .border-blue { border-color: var(--primary); color: var(--primary); }
+        .border-saffron { border-color: var(--saffron); color: var(--saffron); }
+        .border-green { border-color: var(--green); color: var(--green); }
+
+        .custom-card { background: var(--card-bg); border-radius: 12px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .nav-pills-custom .nav-link { padding: 5px 10px; font-size: 0.85rem; margin: 0 2px; background: white; color: var(--primary); font-weight: 600; }
+        .nav-pills-custom .nav-link.active { background: var(--primary); color: white; transform: scale(1.02); }
+        
+        /* COMPACT TABLE STYLES */
+        .compact-table th, .compact-table td {
+            padding: 4px 6px !important; /* Very tight spacing */
+            font-size: 12px; /* Small font */
+            vertical-align: middle;
+            line-height: 1.2;
+        }
+        .compact-table th { background-color: #f0f0f0; }
+        .btn-xs {
+            padding: 1px 5px;
+            font-size: 10px;
+            border-radius: 4px;
+        }
+        
+        .form-control-sm-custom {
+            padding: 5px; font-size: 13px; border-radius: 6px;
+        }
+        label.small-label { font-size: 11px; font-weight: bold; margin-bottom: 1px; color: #444; }
     </style>
 </head>
 <body>
 
 <div id="loadingOverlay">
     <div class="spinner-border text-primary" role="status"></div>
-    <h4 class="mt-3 fw-bold text-primary">Loading...</h4>
+    <b class="mt-2 text-primary">Loading...</b>
 </div>
 
 <header class="app-header">
     <div class="container d-flex justify-content-between align-items-center">
         <div>
-            <h4 class="mb-0 fw-bold text-primary" style="text-transform: uppercase;"><i class="fas fa-flag-checkered text-danger"></i> क्रांतिकारी वर्ष 2026</h4>
-            <small class="text-dark fw-bold">Deepak Shengule | Mission</small>
+            <h5 class="mb-0 fw-bold text-primary" style="font-size: 1.1rem;"><i class="fas fa-flag-checkered text-danger"></i> क्रांती 2026</h5>
+            <small class="text-dark fw-bold" style="font-size: 0.7rem;">Deepak Shengule | Mission</small>
         </div>
-        <span class="badge bg-white text-dark border p-2 rounded-pill shadow-sm" id="statusBadge">🔴 Connecting...</span>
+        <span class="badge bg-white text-dark border px-2 py-1" id="statusBadge" style="font-size: 0.7rem;">Connecting...</span>
     </div>
 </header>
 
-<div class="container">
+<div class="container px-2">
     
-    <div id="reminderSection" class="alert alert-light border-start border-5 border-danger shadow-lg mb-3" style="display:none;">
-        <h6 class="fw-bold text-danger mb-1"><i class="fas fa-bell"></i> आजचे रिमांइडर्स (Call Now)</h6>
-        <div id="reminderList" class="row g-2 mt-2"></div>
+    <div id="reminderSection" class="alert alert-danger p-2 mb-2 shadow-sm" style="display:none; font-size: 0.8rem;">
+        <strong><i class="fas fa-bell"></i> रिमांइडर्स:</strong> <span id="reminderList"></span>
     </div>
 
-    <div class="row g-2 mb-3">
-        <div class="col-4"><div class="mini-stat-card border-blue"><h3 id="topTotal">0</h3><small>Total List</small></div></div>
-        <div class="col-4"><div class="mini-stat-card border-saffron"><h3 id="topFollow">0</h3><small>Follow-ups</small></div></div>
+    <div class="row g-1 mb-2">
+        <div class="col-4"><div class="mini-stat-card border-blue"><h3 id="topTotal">0</h3><small>Total</small></div></div>
+        <div class="col-4"><div class="mini-stat-card border-saffron"><h3 id="topFollow">0</h3><small>FollowUps</small></div></div>
         <div class="col-4"><div class="mini-stat-card border-green"><h3 id="topSales">0</h3><small>Sales</small></div></div>
     </div>
 
-    <ul class="nav nav-pills nav-pills-custom justify-content-center mb-3" id="mainTabs">
+    <ul class="nav nav-pills nav-pills-custom justify-content-center mb-2" id="mainTabs">
         <li class="nav-item"><button class="nav-link active" onclick="switchProject('health')">आरोग्य</button></li>
         <li class="nav-item"><button class="nav-link" onclick="switchProject('anemia')">ॲनिमिया</button></li>
         <li class="nav-item"><button class="nav-link" onclick="switchProject('water')">जलसंचय</button></li>
         <li class="nav-item"><button class="nav-link" onclick="switchProject('network')">नेटवर्क</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="switchProject('reports')">डाउनलोड</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="switchProject('reports')"><i class="fas fa-download"></i></button></li>
     </ul>
 
     <div id="contentArea">
         <div id="projectArea">
-            <h5 class="fw-bold mb-3 text-white text-center text-shadow" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.5);" id="currentProjectTitle">Abhiyan Title</h5>
+            <div class="text-center mb-2"><span class="badge bg-primary" id="currentProjectTitle">Title</span></div>
 
-            <div class="custom-card p-2 mb-3">
+            <div class="custom-card p-1 mb-2">
                 <ul class="nav nav-pills nav-fill" id="subTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active text-dark" id="tab-list" data-bs-toggle="pill" data-bs-target="#sub-list" type="button" role="tab">📋 लिस्ट ॲड</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link text-dark" id="tab-followup" data-bs-toggle="pill" data-bs-target="#sub-followup" type="button" role="tab">📞 फॉलो-अप</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link text-dark" id="tab-sales" data-bs-toggle="pill" data-bs-target="#sub-sales" type="button" role="tab">🛒 विक्री</button>
-                    </li>
+                    <li class="nav-item"><button class="nav-link active text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-list">📋 लिस्ट</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-followup">📞 फॉलो-अप</button></li>
+                    <li class="nav-item"><button class="nav-link text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-sales">🛒 विक्री</button></li>
                 </ul>
             </div>
 
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="sub-list" role="tabpanel">
-                    <div class="custom-card border-top border-4 border-primary p-4">
-                        <div class="row g-3">
-                            
-                            <div class="col-12 bg-light p-3 rounded border border-primary">
-                                <label class="small fw-bold text-primary mb-1"><i class="fas fa-sync"></i> दुसऱ्या लिस्ट मधून नाव घ्या (Smart Import):</label>
-                                <select id="importSelect" class="form-select border-primary" onchange="fillFromImport()">
-                                    <option value="">-- नाव निवडा (येथे फक्त नवीन लोक दिसतील) --</option>
-                                </select>
-                                <small class="text-muted" style="font-size: 0.75rem;">* टीप: जे या लिस्टमध्ये आधीच ॲड आहेत, ते इथे दिसणार नाहीत.</small>
+                <div class="tab-pane fade show active" id="sub-list">
+                    <div class="custom-card p-2 border-top border-3 border-primary">
+                        <div class="row g-1">
+                            <div class="col-12 mb-1">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light"><i class="fas fa-sync"></i></span>
+                                    <select id="importSelect" class="form-select form-control-sm-custom" onchange="fillFromImport()">
+                                        <option value="">-- Smart Import (इतर लिस्ट मधून) --</option>
+                                    </select>
+                                </div>
                             </div>
-                            
-                            <div class="col-12 text-center text-muted fw-bold small">- किंवा नवीन माहिती भरा -</div>
-
-                            <div class="col-12">
-                                <button class="btn btn-warning w-100 fw-bold text-white shadow-sm" onclick="pickContact()">
-                                    <i class="fas fa-address-book me-2"></i> मोबाईल कॉन्टॅक्ट कॉपी करा
+                            <div class="col-12 mb-1">
+                                <button class="btn btn-warning btn-sm w-100 fw-bold text-white py-0" onclick="pickContact()" style="font-size: 12px;">
+                                    <i class="fas fa-address-book"></i> फोन मधून नंबर घ्या
                                 </button>
                             </div>
-                            <div class="col-md-3"><label class="small fw-bold">नाव *</label><input type="text" id="pName" class="form-control" placeholder="नाव"></div>
-                            <div class="col-md-2"><label class="small fw-bold">मोबाईल *</label><input type="number" id="pMobile" class="form-control" placeholder="मोबाईल"></div>
-                            <div class="col-md-2"><label class="small fw-bold">गाव *</label><input type="text" id="pVillage" class="form-control" placeholder="गाव"></div>
-                            <div class="col-md-2"><label class="small fw-bold">व्यवसाय *</label><input type="text" id="pProfession" class="form-control" placeholder="व्यवसाय"></div>
-                            <div class="col-md-2"><label class="small fw-bold">प्रपोजर *</label><input type="text" id="pProposer" class="form-control" placeholder="कोणामार्फत?"></div>
-                            <div class="col-md-1 d-flex align-items-end"><button class="btn btn-custom w-100" style="background:var(--primary);" onclick="addPerson()">SAVE</button></div>
+                            
+                            <div class="col-6"><input type="text" id="pName" class="form-control form-control-sm-custom" placeholder="नाव (Name)"></div>
+                            <div class="col-6"><input type="number" id="pMobile" class="form-control form-control-sm-custom" placeholder="मोबाईल"></div>
+                            <div class="col-4"><input type="text" id="pVillage" class="form-control form-control-sm-custom" placeholder="गाव"></div>
+                            <div class="col-4"><input type="text" id="pProfession" class="form-control form-control-sm-custom" placeholder="व्यवसाय"></div>
+                            <div class="col-4"><input type="text" id="pProposer" class="form-control form-control-sm-custom" placeholder="प्रपोजर"></div>
+                            
+                            <div class="col-12 mt-1">
+                                <button id="saveBtn" class="btn btn-primary btn-sm w-100 fw-bold" onclick="addPerson()">SAVE</button>
+                            </div>
                         </div>
                     </div>
+
                     <div class="custom-card">
-                        <div class="p-2 bg-light border-bottom text-center small fw-bold">सेव केलेली लिस्ट (Newest First)</div>
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light sticky-top"><tr><th>नाव</th><th>गाव</th><th>मोबाईल</th><th>प्रपोजर</th><th>कृती</th></tr></thead>
+                        <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+                            <table class="table table-striped table-bordered mb-0 compact-table table-sm">
+                                <thead class="sticky-top bg-light">
+                                    <tr>
+                                        <th style="width:25%">नाव</th>
+                                        <th style="width:20%">गाव</th>
+                                        <th style="width:25%">मोबाईल</th>
+                                        <th style="width:30%">कृती</th>
+                                    </tr>
+                                </thead>
                                 <tbody id="personTableBody"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="tab-pane fade" id="sub-followup" role="tabpanel">
-                    <div class="custom-card border-top border-4 border-warning p-4">
-                        <label class="fw-bold">व्यक्ती निवडा:</label><select id="followupPersonSelect" class="form-select mb-3"></select>
-                        <label class="fw-bold">चर्चा (Remark):</label><textarea id="fRemark" class="form-control mb-3" placeholder="आज काय बोलणे झाले..."></textarea>
-                        <label class="fw-bold text-primary">पुढील ३ तारखा:</label>
-                        <div class="d-flex gap-2 mb-3"><input type="date" id="fDate1" class="form-control"><input type="date" id="fDate2" class="form-control"><input type="date" id="fDate3" class="form-control"></div>
-                        <button class="btn btn-custom w-100" style="background:var(--saffron);" onclick="addFollowup()">रिमांइडर सेव्ह करा</button>
+                <div class="tab-pane fade" id="sub-followup">
+                    <div class="custom-card p-3 border-top border-3 border-warning">
+                        <label class="small-label">व्यक्ती:</label><select id="followupPersonSelect" class="form-select form-control-sm-custom mb-2"></select>
+                        <label class="small-label">चर्चा:</label><input type="text" id="fRemark" class="form-control form-control-sm-custom mb-2" placeholder="Remark...">
+                        <label class="small-label">Next 3 Dates:</label>
+                        <div class="d-flex gap-1 mb-2">
+                            <input type="date" id="fDate1" class="form-control form-control-sm-custom">
+                            <input type="date" id="fDate2" class="form-control form-control-sm-custom">
+                            <input type="date" id="fDate3" class="form-control form-control-sm-custom">
+                        </div>
+                        <button class="btn btn-warning btn-sm w-100 text-white" onclick="addFollowup()">Save Reminder</button>
                     </div>
-                    <div class="custom-card p-3" id="followupHistoryList" style="max-height: 400px; overflow-y: auto;"></div>
+                    <div class="custom-card p-2" id="followupHistoryList" style="max-height: 50vh; overflow-y: auto; font-size: 12px;"></div>
                 </div>
 
-                <div class="tab-pane fade" id="sub-sales" role="tabpanel">
-                    <div class="custom-card border-top border-4 border-success p-4">
+                <div class="tab-pane fade" id="sub-sales">
+                    <div class="custom-card p-3 border-top border-3 border-success">
                         <div class="row g-2">
-                            <div class="col-12"><label class="fw-bold">ग्राहक</label><select id="salePersonSelect" class="form-select"></select></div>
-                            <div class="col-12"><label class="fw-bold">प्रॉडक्ट</label><select id="productSelect" class="form-select"><option value="none">-- प्रॉडक्ट --</option><option value="oil_1l">💧 1L तेल</option><option value="oil_5l">🛢️ 5L तेल</option><option value="nutri_woman">💊 Nutri Woman</option></select></div>
-                            <div class="col-6"><label class="fw-bold">तारीख</label><input type="date" id="saleDate" class="form-control"></div>
-                            <div class="col-6 d-flex align-items-end"><button class="btn btn-custom w-100" style="background:var(--green);" onclick="addSale()">विक्री Save</button></div>
+                            <div class="col-12"><select id="salePersonSelect" class="form-select form-control-sm-custom"></select></div>
+                            <div class="col-12"><select id="productSelect" class="form-select form-control-sm-custom"><option value="none">Product...</option><option value="oil_1l">1L Oil</option><option value="oil_5l">5L Oil</option><option value="nutri_woman">Nutri Woman</option></select></div>
+                            <div class="col-6"><input type="date" id="saleDate" class="form-control form-control-sm-custom"></div>
+                            <div class="col-6"><button class="btn btn-success btn-sm w-100" onclick="addSale()">Sale Entry</button></div>
                         </div>
                     </div>
-                    <div id="salesList" class="p-2"></div>
+                    <div id="salesList" class="p-2" style="font-size: 12px;"></div>
                 </div>
             </div>
         </div>
 
         <div id="masterReportsArea" style="display:none;">
-            <div class="custom-card p-5 text-center">
-                <h3 class="mb-4 text-primary">डेटा डाउनलोड</h3>
-                <div class="d-flex justify-content-center gap-3 mb-4">
-                    <button class="btn btn-success btn-lg shadow" onclick="downloadExcel()"><i class="fas fa-file-excel me-2"></i> Excel</button>
-                    <button class="btn btn-danger btn-lg shadow" onclick="downloadPDF()"><i class="fas fa-file-pdf me-2"></i> PDF</button>
+            <div class="custom-card p-4 text-center">
+                <h5>Download Data</h5>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <button class="btn btn-success btn-sm" onclick="downloadExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+                    <button class="btn btn-danger btn-sm" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
                 </div>
             </div>
-            <table class="table d-none" id="exportTable"><thead><tr><th>Abhiyan</th><th>Name</th><th>Village</th><th>Profession</th><th>Mobile</th><th>Proposer</th><th>Sales</th></tr></thead><tbody id="exportTableBody"></tbody></table>
+            <table class="table d-none" id="exportTable"><thead><tr><th>Abhiyan</th><th>Name</th><th>Village</th><th>Mobile</th><th>Proposer</th><th>Sales</th></tr></thead><tbody id="exportTableBody"></tbody></table>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCny9svhGUs3Ja5OrTHfH5Kqj05GW2S0RE",
@@ -196,32 +221,32 @@
     const dbRef = firebase.firestore();
     const DOC_ID = "mainData"; const COL_NAME = "crm_data"; 
 
-    let db = { currentProject: 'health', projects: { 'health': { title: 'आरोग्य अभियान (1 लाख)', people: [], followups: [], sales: [] }, 'anemia': { title: 'ॲनिमिया मुक्त अभियान', people: [], followups: [], sales: [] }, 'water': { title: 'जलसंचय अभियान', people: [], followups: [], sales: [] }, 'network': { title: 'नेटवर्क अभियान', people: [], followups: [], sales: [] } } };
+    let db = { currentProject: 'health', projects: { 'health': { title: 'आरोग्य अभियान', people: [], followups: [], sales: [] }, 'anemia': { title: 'ॲनिमिया मुक्त', people: [], followups: [], sales: [] }, 'water': { title: 'जलसंचय', people: [], followups: [], sales: [] }, 'network': { title: 'नेटवर्क', people: [], followups: [], sales: [] } } };
+    let editIndex = null;
 
     window.onload = function() { document.getElementById('saleDate').valueAsDate = new Date(); loadFromFirebase(); };
 
     function loadFromFirebase() {
         dbRef.collection(COL_NAME).doc(DOC_ID).get().then((doc) => {
             if (doc.exists) { db = doc.data(); } else { saveToFirebase(); }
-            updateStatus("🟢 Online");
-        }).catch((error) => { alert("DB Error"); updateStatus("🔴 Offline"); }).finally(() => {
+            updateStatus("Online");
+        }).catch((error) => { updateStatus("Offline"); }).finally(() => {
             document.getElementById('loadingOverlay').style.display = 'none';
             renderCurrentProject(); checkReminders();
         });
     }
 
     function saveToFirebase() {
-        updateStatus("🟡 Saving...");
+        updateStatus("Saving...");
         dbRef.collection(COL_NAME).doc(DOC_ID).set(db).then(() => {
-            updateStatus("🟢 Online"); renderCurrentProject(); checkReminders();
-        }).catch((error) => { updateStatus("🔴 Error"); });
+            updateStatus("Online"); renderCurrentProject(); checkReminders();
+        }).catch((error) => { updateStatus("Error"); });
     }
 
     function updateStatus(msg) {
         const badge = document.getElementById('statusBadge'); badge.innerText = msg;
-        if(msg.includes("Online")) badge.className = "badge bg-success text-white border p-2 rounded-pill shadow-sm";
-        else if(msg.includes("Saving")) badge.className = "badge bg-warning text-dark border p-2 rounded-pill shadow-sm";
-        else badge.className = "badge bg-danger text-white border p-2 rounded-pill shadow-sm";
+        if(msg==="Online") badge.className = "badge bg-success text-white border px-2 py-1";
+        else badge.className = "badge bg-danger text-white border px-2 py-1";
     }
 
     window.switchProject = function(key) {
@@ -237,6 +262,7 @@
         }
         document.querySelectorAll('#mainTabs button').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
+        resetForm();
     }
 
     window.renderCurrentProject = function() {
@@ -249,7 +275,7 @@
         const tbody = document.getElementById('personTableBody');
         const selF = document.getElementById('followupPersonSelect');
         const selS = document.getElementById('salePersonSelect');
-        tbody.innerHTML = ''; selF.innerHTML = '<option value="">-- निवडा --</option>'; selS.innerHTML = '<option value="">-- निवडा --</option>';
+        tbody.innerHTML = ''; selF.innerHTML = '<option value="">-- Select --</option>'; selS.innerHTML = '<option value="">-- Select --</option>';
 
         proj.people.forEach((p, idx) => {
             let opt = `<option value="${idx}">${p.name} (${p.village})</option>`;
@@ -257,53 +283,47 @@
         });
 
         proj.people.map((p, i) => ({...p, oIdx: i})).reverse().forEach(p => {
-            tbody.innerHTML += `<tr><td class="fw-bold">${p.name}</td><td>${p.village}</td><td>${p.mobile}</td><td>${p.proposer}</td><td><a href="https://wa.me/91${p.mobile}" class="btn btn-sm btn-success me-1"><i class="fab fa-whatsapp"></i></a><button class="btn btn-sm btn-light border" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash text-danger"></i></button></td></tr>`;
+            tbody.innerHTML += `<tr>
+                <td class="fw-bold text-primary">${p.name}</td>
+                <td>${p.village}</td>
+                <td>${p.mobile}</td>
+                <td class="text-center">
+                    <button class="btn btn-xs btn-warning" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
+                    <a href="https://wa.me/91${p.mobile}" class="btn btn-xs btn-success"><i class="fab fa-whatsapp"></i></a>
+                    <button class="btn btn-xs btn-danger" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
         });
 
         const fList = document.getElementById('followupHistoryList'); fList.innerHTML = '';
         proj.followups.slice().reverse().forEach(f => {
-            let badges = f.dates.map(d => `<span class="badge bg-warning text-dark me-1">${d}</span>`).join('');
-            fList.innerHTML += `<div class="p-3 mb-2 bg-light rounded border-start border-4 border-warning"><strong>${f.personName}</strong> <span class="float-end small">${f.entryDate}</span><p class="mb-0">${f.remark}</p><div>${badges}</div></div>`;
+            fList.innerHTML += `<div class="p-2 mb-1 bg-light border-start border-3 border-warning rounded"><strong>${f.personName}</strong>: ${f.remark} <span class="float-end text-muted">${f.entryDate}</span></div>`;
         });
 
         const sList = document.getElementById('salesList'); sList.innerHTML = '';
         proj.sales.slice().reverse().forEach(s => {
-            sList.innerHTML += `<div class="p-2 mb-2 bg-light rounded border-start border-4 border-success d-flex justify-content-between"><span><strong>${s.personName}</strong> - ${s.product}</span><span class="badge bg-white text-dark border">${s.date}</span></div>`;
+            sList.innerHTML += `<div class="p-2 mb-1 bg-light border-start border-3 border-success rounded"><strong>${s.personName}</strong>: ${s.product} <span class="float-end">${s.date}</span></div>`;
         });
 
-        // LOAD IMPORT OPTIONS (STRICT FILTER)
         loadImportOptions();
     }
 
-    // --- STRICT IMPORT FILTER LOGIC ---
     function loadImportOptions() {
         const select = document.getElementById('importSelect');
-        select.innerHTML = '<option value="">-- नाव निवडा (येथे फक्त नवीन लोक दिसतील) --</option>';
-        
-        // 1. Get all mobile numbers CURRENTLY in this list (Cleaned)
+        select.innerHTML = '<option value="">-- Smart Import (इतर लिस्ट) --</option>';
         const currentMobiles = db.projects[db.currentProject].people.map(p => String(p.mobile).trim());
-        
-        // 2. Track what we added to dropdown to avoid showing same person twice
         const addedToDropdown = new Set();
 
         for (const key in db.projects) {
-            // Don't show from current project (obviously)
             if (key === db.currentProject) continue;
-
             db.projects[key].people.forEach(p => {
                 const mob = String(p.mobile).trim();
-                
-                // FILTER: Only show if NOT in current list AND NOT already in dropdown
                 if (!currentMobiles.includes(mob) && !addedToDropdown.has(mob)) {
                     const pStr = JSON.stringify(p).replace(/"/g, '&quot;');
                     select.innerHTML += `<option value="${pStr}">${p.name} - ${p.village} (${db.projects[key].title})</option>`;
                     addedToDropdown.add(mob);
                 }
             });
-        }
-        
-        if (addedToDropdown.size === 0) {
-             select.innerHTML = '<option value="">-- नवीन नाव उपलब्ध नाही --</option>';
         }
     }
 
@@ -320,63 +340,88 @@
     }
 
     window.addPerson = function() {
-        const name = document.getElementById('pName').value;
-        const mobile = document.getElementById('pMobile').value;
-        const village = document.getElementById('pVillage').value;
-        const profession = document.getElementById('pProfession').value;
-        const proposer = document.getElementById('pProposer').value;
+        const p = {
+            name: document.getElementById('pName').value,
+            mobile: document.getElementById('pMobile').value,
+            village: document.getElementById('pVillage').value,
+            profession: document.getElementById('pProfession').value,
+            proposer: document.getElementById('pProposer').value
+        };
 
-        if(!name || !mobile || !village || !profession || !proposer) { alert("⚠️ सर्व माहिती भरा!"); return; }
+        if(!p.name || !p.mobile || !p.village) { alert("नाव, मोबाईल, गाव आवश्यक आहे!"); return; }
         
-        // Double Check on Save
-        const exists = db.projects[db.currentProject].people.some(p => String(p.mobile).trim() === String(mobile).trim());
-        if(exists) { alert("⚠️ हा मोबाईल नंबर आधीच या लिस्टमध्ये आहे!"); return; }
+        const existingIdx = db.projects[db.currentProject].people.findIndex(x => String(x.mobile) === String(p.mobile));
+        if(existingIdx !== -1 && existingIdx !== editIndex) { alert("मोबाईल नंबर आधीच आहे!"); return; }
 
-        db.projects[db.currentProject].people.push({ name, mobile, village, profession, proposer });
-        saveToFirebase();
-        ['pName','pMobile','pVillage','pProfession','pProposer'].forEach(id => document.getElementById(id).value = '');
-        alert("✅ सेव्ह झाले!");
+        if (editIndex !== null) {
+            db.projects[db.currentProject].people[editIndex] = p;
+            alert("Updated!");
+        } else {
+            db.projects[db.currentProject].people.push(p);
+            alert("Saved!");
+        }
+        saveToFirebase(); resetForm();
     }
 
-    window.delPerson = function(idx) { if(confirm("डिलीट?")) { db.projects[db.currentProject].people.splice(idx, 1); saveToFirebase(); } }
+    window.editPerson = function(idx) {
+        const p = db.projects[db.currentProject].people[idx];
+        document.getElementById('pName').value = p.name;
+        document.getElementById('pMobile').value = p.mobile;
+        document.getElementById('pVillage').value = p.village;
+        document.getElementById('pProfession').value = p.profession;
+        document.getElementById('pProposer').value = p.proposer;
+        editIndex = idx;
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = "UPDATE"; btn.classList.replace('btn-primary','btn-warning');
+        document.getElementById('sub-list').scrollIntoView();
+    }
+
+    function resetForm() {
+        ['pName','pMobile','pVillage','pProfession','pProposer'].forEach(id => document.getElementById(id).value = '');
+        editIndex = null;
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = "SAVE"; btn.classList.replace('btn-warning','btn-primary');
+    }
+
+    window.delPerson = function(idx) { if(confirm("Delete?")) { db.projects[db.currentProject].people.splice(idx, 1); saveToFirebase(); } }
 
     window.addFollowup = function() {
         const idx = document.getElementById('followupPersonSelect').value;
-        if(idx === "") { alert("व्यक्ती निवडा"); return; }
+        if(idx === "") { alert("Select Person"); return; }
         const p = db.projects[db.currentProject].people[idx];
         let dates = []; ['fDate1','fDate2','fDate3'].forEach(id => { if(document.getElementById(id).value) dates.push(document.getElementById(id).value); });
         db.projects[db.currentProject].followups.push({ personName: p.name, mobile: p.mobile, proposer: p.proposer, remark: document.getElementById('fRemark').value, dates: dates, entryDate: new Date().toISOString().split('T')[0] });
-        saveToFirebase(); alert("Saved!"); document.getElementById('fRemark').value = '';
+        saveToFirebase(); alert("Reminder Saved!"); document.getElementById('fRemark').value = '';
     }
 
     window.addSale = function() {
         const idx = document.getElementById('salePersonSelect').value; const prod = document.getElementById('productSelect').value;
-        if(idx === "" || prod === "none") { alert("निवडा"); return; }
+        if(idx === "" || prod === "none") { alert("Select Customer & Product"); return; }
         const p = db.projects[db.currentProject].people[idx]; const date = document.getElementById('saleDate').value;
         let dates = []; let base = new Date(date); const addD = (n) => { let d = new Date(base); d.setDate(base.getDate()+n); return d.toISOString().split('T')[0]; };
         if(prod === 'oil_1l') dates.push(addD(5)); if(prod === 'oil_5l') { dates.push(addD(15)); dates.push(addD(25)); } if(prod === 'nutri_woman') { dates.push(addD(7)); dates.push(addD(15)); dates.push(addD(25)); }
-        db.projects[db.currentProject].followups.push({ personName: p.name, mobile: p.mobile, remark: `System: ${prod} Sale`, dates: dates, entryDate: date });
+        db.projects[db.currentProject].followups.push({ personName: p.name, mobile: p.mobile, remark: `Auto: ${prod} Sale`, dates: dates, entryDate: date });
         db.projects[db.currentProject].sales.push({ personName: p.name, product: prod, date });
         saveToFirebase(); alert("Sale Saved!");
     }
 
     window.checkReminders = function() {
         const today = new Date().toISOString().split('T')[0];
-        const list = document.getElementById('reminderList'); const box = document.getElementById('reminderSection');
+        const list = document.getElementById('reminderList'); const section = document.getElementById('reminderSection');
         list.innerHTML = ''; let hasTask = false;
         for(let k in db.projects) {
             db.projects[k].followups.forEach(f => {
-                if(f.dates.includes(today)) { hasTask = true; list.innerHTML += `<div class="col-md-6"><div class="p-3 bg-white border rounded d-flex justify-content-between align-items-center"><div><strong>${f.personName}</strong><br><small class="text-danger">${f.remark}</small></div><div><a href="tel:${f.mobile}" class="btn btn-primary"><i class="fas fa-phone"></i></a></div></div></div>`; }
+                if(f.dates.includes(today)) { hasTask = true; list.innerHTML += `<span class="badge bg-warning text-dark me-1">${f.personName} (${f.remark}) <a href="tel:${f.mobile}"><i class="fas fa-phone"></i></a></span>`; }
             });
         }
-        box.style.display = hasTask ? 'block' : 'none';
+        section.style.display = hasTask ? 'block' : 'none';
     }
 
     window.renderMasterReport = function() {
         const tbody = document.getElementById('exportTableBody'); tbody.innerHTML = '';
         for (const k in db.projects) {
             const pr = db.projects[k];
-            pr.people.forEach(p => { let s = pr.sales.filter(x => x.personName === p.name).map(x => x.product).join(', '); tbody.innerHTML += `<tr><td>${pr.title}</td><td>${p.name}</td><td>${p.village}</td><td>${p.profession}</td><td>${p.mobile}</td><td>${p.proposer}</td><td>${s}</td></tr>`; });
+            pr.people.forEach(p => { let s = pr.sales.filter(x => x.personName === p.name).map(x => x.product).join(', '); tbody.innerHTML += `<tr><td>${pr.title}</td><td>${p.name}</td><td>${p.village}</td><td>${p.mobile}</td><td>${p.proposer}</td><td>${s}</td></tr>`; });
         }
     }
     window.downloadExcel = function() { renderMasterReport(); const wb = XLSX.utils.table_to_book(document.getElementById('exportTable'), {sheet: "Data"}); XLSX.writeFile(wb, "Abhiyan_Data.xlsx"); }
