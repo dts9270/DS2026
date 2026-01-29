@@ -108,6 +108,16 @@
                 <div class="tab-pane fade show active" id="sub-list" role="tabpanel">
                     <div class="custom-card border-top border-4 border-primary p-4">
                         <div class="row g-3">
+                            
+                            <div class="col-12 bg-light p-3 rounded border border-primary">
+                                <label class="small fw-bold text-primary mb-1"><i class="fas fa-sync"></i> दुसऱ्या लिस्ट मधून नाव घ्या (Smart Import):</label>
+                                <select id="importSelect" class="form-select border-primary" onchange="fillFromImport()">
+                                    <option value="">-- नाव निवडा (Select Name) --</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-12 text-center text-muted fw-bold small">- किंवा नवीन माहिती भरा -</div>
+
                             <div class="col-12">
                                 <button class="btn btn-warning w-100 fw-bold text-white shadow-sm" onclick="pickContact()">
                                     <i class="fas fa-address-book me-2"></i> मोबाईल कॉन्टॅक्ट कॉपी करा
@@ -240,25 +250,56 @@
         const selS = document.getElementById('salePersonSelect');
         tbody.innerHTML = ''; selF.innerHTML = '<option value="">-- निवडा --</option>'; selS.innerHTML = '<option value="">-- निवडा --</option>';
 
+        // Populate Main Dropdowns
         proj.people.forEach((p, idx) => {
             let opt = `<option value="${idx}">${p.name} (${p.village})</option>`;
             selF.innerHTML += opt; selS.innerHTML += opt;
         });
 
+        // Table List
         proj.people.map((p, i) => ({...p, oIdx: i})).reverse().forEach(p => {
             tbody.innerHTML += `<tr><td class="fw-bold">${p.name}</td><td>${p.village}</td><td>${p.mobile}</td><td>${p.proposer}</td><td><a href="https://wa.me/91${p.mobile}" class="btn btn-sm btn-success me-1"><i class="fab fa-whatsapp"></i></a><button class="btn btn-sm btn-light border" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash text-danger"></i></button></td></tr>`;
         });
 
+        // History
         const fList = document.getElementById('followupHistoryList'); fList.innerHTML = '';
         proj.followups.slice().reverse().forEach(f => {
             let badges = f.dates.map(d => `<span class="badge bg-warning text-dark me-1">${d}</span>`).join('');
             fList.innerHTML += `<div class="p-3 mb-2 bg-light rounded border-start border-4 border-warning"><strong>${f.personName}</strong> <span class="float-end small">${f.entryDate}</span><p class="mb-0">${f.remark}</p><div>${badges}</div></div>`;
         });
 
+        // Sales List
         const sList = document.getElementById('salesList'); sList.innerHTML = '';
         proj.sales.slice().reverse().forEach(s => {
             sList.innerHTML += `<div class="p-2 mb-2 bg-light rounded border-start border-4 border-success d-flex justify-content-between"><span><strong>${s.personName}</strong> - ${s.product}</span><span class="badge bg-white text-dark border">${s.date}</span></div>`;
         });
+
+        // LOAD IMPORT OPTIONS
+        loadImportOptions();
+    }
+
+    // --- SMART IMPORT LOGIC (RESTORED) ---
+    function loadImportOptions() {
+        const select = document.getElementById('importSelect');
+        select.innerHTML = '<option value="">-- नाव निवडा (Select Name) --</option>';
+        for (const key in db.projects) {
+            db.projects[key].people.forEach(p => {
+                const pStr = JSON.stringify(p).replace(/"/g, '&quot;');
+                select.innerHTML += `<option value="${pStr}">${p.name} - ${p.village} (${db.projects[key].title})</option>`;
+            });
+        }
+    }
+
+    window.fillFromImport = function() {
+        const val = document.getElementById('importSelect').value;
+        if(!val) return;
+        const p = JSON.parse(val);
+        document.getElementById('pName').value = p.name || '';
+        document.getElementById('pMobile').value = p.mobile || '';
+        document.getElementById('pVillage').value = p.village || '';
+        document.getElementById('pProfession').value = p.profession || '';
+        document.getElementById('pProposer').value = p.proposer || '';
+        document.getElementById('importSelect').value = "";
     }
 
     window.addPerson = function() {
@@ -268,7 +309,7 @@
         const profession = document.getElementById('pProfession').value;
         const proposer = document.getElementById('pProposer').value;
 
-        if(!name || !mobile || !village || !profession || !proposer) { alert("⚠️ कृपया सर्व माहिती भरा!"); return; }
+        if(!name || !mobile || !village || !profession || !proposer) { alert("⚠️ सर्व माहिती भरा!"); return; }
         db.projects[db.currentProject].people.push({ name, mobile, village, profession, proposer });
         saveToFirebase();
         ['pName','pMobile','pVillage','pProfession','pProposer'].forEach(id => document.getElementById(id).value = '');
