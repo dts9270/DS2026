@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>क्रांतिकारी वर्ष 2026</title>
+    <title>क्रांतिकारी वर्ष 2026 (Ultimate UI)</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,490 +12,567 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        :root {
-            --primary: #000080; --saffron: #FF9933; --green: #138808;
-            --card-bg: rgba(255, 255, 255, 0.98);
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%);
-            background-attachment: fixed; min-height: 100vh; padding-bottom: 50px;
-        }
-        #loadingOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 9999;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
-        }
-        .app-header {
-            background: rgba(255, 255, 255, 0.95); padding: 10px 0; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; border-radius: 0 0 15px 15px;
-        }
-        .mini-stat-card {
-            background: white; border-radius: 8px; padding: 5px; text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-bottom: 3px solid #ddd;
-        }
-        .border-blue { border-color: var(--primary); color: var(--primary); }
-        .border-saffron { border-color: var(--saffron); color: var(--saffron); }
-        .border-green { border-color: var(--green); color: var(--green); }
-
-        .custom-card { background: var(--card-bg); border-radius: 12px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        :root { --primary: #000080; --saffron: #FF9933; --green: #138808; --bg-light: #f4f6f8; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%); min-height: 100vh; padding-bottom: 70px; }
         
-        /* --- BIG INPUTS (FORM) --- */
-        .form-label { font-weight: 600; color: #333; margin-bottom: 2px; font-size: 14px; }
-        .form-control, .form-select { 
-            padding: 10px; font-size: 15px; border-radius: 8px; /* Comfortable size */
-            border: 1px solid #ccc;
-        }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,128,0.1); }
-        .btn-big { padding: 10px; font-size: 16px; font-weight: bold; width: 100%; border-radius: 8px; }
-
-        /* --- COMPACT TABLE (LIST) --- */
-        .compact-table th, .compact-table td {
-            padding: 4px 6px !important; /* Tight spacing */
-            font-size: 12px; /* Small font */
-            vertical-align: middle;
-            line-height: 1.2;
-        }
-        .compact-table th { background-color: #f0f0f0; color: #333; font-weight: 600; }
-        .btn-xs { padding: 2px 6px; font-size: 11px; border-radius: 4px; }
+        #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
         
-        .nav-pills-custom .nav-link { padding: 6px 12px; font-size: 0.9rem; margin: 0 2px; background: white; color: var(--primary); font-weight: 600; }
-        .nav-pills-custom .nav-link.active { background: var(--primary); color: white; transform: scale(1.02); }
+        /* HEADER */
+        .app-header { background: white; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 0 0 20px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .header-title { font-weight: 800; color: var(--primary); text-transform: uppercase; font-size: 1.1rem; }
+
+        /* DASHBOARD */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .dash-card { background: white; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); height: 130px; transition: transform 0.2s; border: 2px solid white; cursor: pointer; }
+        .dash-card:active { transform: scale(0.95); background: #f0f0f0; }
+        .dash-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 10px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        .icon-planner { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .icon-list { background: linear-gradient(135deg, #FF9966, #FF5E62); }
+        .icon-follow { background: linear-gradient(135deg, #56CCF2, #2F80ED); }
+        .icon-sales { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .icon-report { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+        .dash-label { font-weight: 700; color: #333; font-size: 13px; text-align: center; }
+
+        /* SECTIONS */
+        .page-section { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .custom-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 15px; }
+
+        /* TABS */
+        .project-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
+        .project-tab-btn { background: white; border: 1px solid #ddd; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 13px; white-space: nowrap; transition: 0.3s; }
+        .project-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
+
+        /* CALENDAR & MEETINGS */
+        .planner-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 14px; }
+        .cal-day { padding: 8px 0; border-radius: 50%; cursor: pointer; }
+        .cal-day:hover { background-color: #f0f0f0; }
+        .cal-today { background-color: var(--saffron); color: white; font-weight: bold; }
+        .cal-event { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
+        .meeting-item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 5px solid #ccc; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .status-Pending { border-left-color: #ffc107; background-color: #fffbeb; }
+        .status-Postponed { border-left-color: #dc3545; background-color: #fff5f5; }
+        .status-Done { border-left-color: #198754; background-color: #f0fdf4; opacity: 0.6; }
+        .status-Done h6 { text-decoration: line-through; color: #666; }
+
+        /* --- NEW PROSPECT LIST UI --- */
+        .prospect-card {
+            background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s;
+            border: 1px solid #eee; position: relative; overflow: hidden;
+        }
+        .prospect-card:active { transform: scale(0.98); }
+        
+        .prospect-header { display: flex; align-items: center; margin-bottom: 12px; }
+        .avatar {
+            width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary), #4b6cb7);
+            color: white; font-size: 20px; font-weight: bold; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; margin-right: 15px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .info h6 { margin: 0; font-weight: 700; font-size: 16px; color: #333; }
+        .info small { color: #666; font-size: 12px; display: block; margin-top: 2px; }
+        
+        .ref-badge { 
+            background: #eef2ff; color: var(--primary); padding: 4px 10px; 
+            border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-top: 5px;
+        }
+
+        .action-row {
+            display: flex; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 12px;
+        }
+        .btn-act {
+            flex: 1; margin: 0 3px; border-radius: 8px; border: none; padding: 8px 0;
+            font-size: 18px; color: white; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .btn-call { background: #4CAF50; }
+        .btn-wa { background: #25D366; }
+        .btn-edit { background: #FFC107; color: #333; }
+        .btn-del { background: #FF5252; }
+        /* -------------------------- */
+
+        .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
+        .form-control, .form-select { padding: 10px; border-radius: 8px; }
+        .btn-action { width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; color: white; border: none; }
+        .back-btn { background: none; border: none; font-size: 22px; color: var(--primary); margin-right: 15px; }
+        
+        .stat-card { color: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; }
+        .bg-total { background: linear-gradient(45deg, #4b6cb7, #182848); }
+        .bg-sales { background: linear-gradient(45deg, #11998e, #38ef7d); }
+        
+        /* LIST ITEM (OLD - For Followup/Sales) */
+        .list-item { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <div id="loadingOverlay">
     <div class="spinner-border text-primary" role="status"></div>
-    <b class="mt-2 text-primary">Loading...</b>
+    <b class="mt-3">Connecting...</b>
 </div>
 
 <header class="app-header">
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <button id="backBtn" class="back-btn" onclick="goHome()" style="display:none;"><i class="fas fa-arrow-left"></i></button>
         <div>
-            <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-flag-checkered text-danger"></i> क्रांती 2026</h5>
-            <small class="text-dark fw-bold">Deepak Shengule | Mission</small>
+            <div class="header-title">क्रांतिकारी वर्ष 2026</div>
+            <div style="font-size: 10px; font-weight: 600; color: #666;">Deepak Shengule | Mission</div>
         </div>
-        <span class="badge bg-white text-dark border px-2 py-1" id="statusBadge">🔴 Connecting...</span>
     </div>
+    <span class="badge bg-light text-dark border px-2 py-1" id="statusBadge">Checking...</span>
 </header>
 
-<div class="container px-2">
+<div id="homeSection">
+    <div class="container mt-3">
+        <div class="custom-card p-3 text-center mb-2 bg-light border">
+            <h5 class="fw-bold text-primary mb-0" id="currentDateDisplay"></h5>
+            <small class="text-muted">Welcome Back!</small>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dash-card" onclick="openSection('planner')" style="grid-column: span 2;">
+                <div class="dash-icon icon-planner"><i class="fas fa-calendar-alt"></i></div>
+                <div class="dash-label">Planner & Meetings</div>
+            </div>
+            <div class="dash-card" onclick="openSection('list')">
+                <div class="dash-icon icon-list"><i class="fas fa-user-plus"></i></div>
+                <div class="dash-label">Prospect List</div>
+            </div>
+            <div class="dash-card" onclick="openSection('followup')">
+                <div class="dash-icon icon-follow"><i class="fas fa-phone-volume"></i></div>
+                <div class="dash-label">Follow Up</div>
+            </div>
+            <div class="dash-card" onclick="openSection('sales')">
+                <div class="dash-icon icon-sales"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="dash-label">Finance/Sales</div>
+            </div>
+            <div class="dash-card" onclick="openSection('reports')">
+                <div class="dash-icon icon-report"><i class="fas fa-file-download"></i></div>
+                <div class="dash-label">Reports</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="plannerSection" class="page-section">
+    <div class="planner-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="m-0 fw-bold text-primary">🗓️ Monthly Planner</h6>
+            <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="openMeetingModal()">+ Add</button>
+        </div>
+        <div class="text-center fw-bold mb-2" id="calMonthYear"></div>
+        <div class="cal-grid mb-2">
+            <div class="text-muted small">S</div><div class="text-muted small">M</div><div class="text-muted small">T</div><div class="text-muted small">W</div><div class="text-muted small">T</div><div class="text-muted small">F</div><div class="text-muted small">S</div>
+        </div>
+        <div class="cal-grid" id="calendarGrid"></div>
+        <hr>
+        <h6 class="fw-bold text-muted small">UPCOMING MEETINGS:</h6>
+        <div id="plannerMeetingList" class="mt-2"></div>
+    </div>
+</div>
+
+<div id="listSection" class="page-section">
+    <div class="project-tabs">
+        <button class="project-tab-btn active" onclick="switchProject('health')">आरोग्य</button>
+        <button class="project-tab-btn" onclick="switchProject('anemia')">ॲनिमिया</button>
+        <button class="project-tab-btn" onclick="switchProject('water')">जलसंचय</button>
+        <button class="project-tab-btn" onclick="switchProject('network')">नेटवर्क</button>
+    </div>
     
-    <div id="reminderSection" class="alert alert-danger p-2 mb-2 shadow-sm" style="display:none; font-size: 0.85rem;">
-        <strong><i class="fas fa-bell"></i> रिमांइडर्स:</strong> <span id="reminderList"></span>
+    <div class="mb-3">
+        <input type="text" id="searchBox" class="form-control search-box" placeholder="🔍 Search Name or Mobile..." onkeyup="renderCurrentView()">
     </div>
 
-    <div class="row g-1 mb-2">
-        <div class="col-4"><div class="mini-stat-card border-blue"><h3 id="topTotal">0</h3><small>Total</small></div></div>
-        <div class="col-4"><div class="mini-stat-card border-saffron"><h3 id="topFollow">0</h3><small>FollowUps</small></div></div>
-        <div class="col-4"><div class="mini-stat-card border-green"><h3 id="topSales">0</h3><small>Sales</small></div></div>
+    <div class="custom-card">
+        <h6 class="fw-bold text-primary mb-3">नवीन मेंबर ॲड करा</h6>
+        <div class="bg-light p-2 rounded mb-3 border">
+            <button class="btn btn-warning w-100 btn-sm fw-bold text-white mb-2" onclick="pickContact()"><i class="fas fa-address-book"></i> Import Contact</button>
+            <select id="importSelect" class="form-select form-select-sm" onchange="fillFromImport()"><option value="">-- Smart Import --</option></select>
+        </div>
+        <div class="mb-2"><label class="form-label">नाव</label><input type="text" id="pName" class="form-control" placeholder="Name"></div>
+        <div class="row g-2 mb-2">
+            <div class="col-6"><label class="form-label">मोबाईल</label><input type="number" id="pMobile" class="form-control" placeholder="Mobile"></div>
+            <div class="col-6"><label class="form-label">गाव</label><input type="text" id="pVillage" class="form-control" placeholder="Village"></div>
+        </div>
+        <div class="row g-2 mb-3">
+            <div class="col-6"><label class="form-label">व्यवसाय</label><input type="text" id="pProfession" class="form-control" placeholder="Job/Business"></div>
+            <div class="col-6"><label class="form-label">प्रपोजर</label><input type="text" id="pProposer" class="form-control" placeholder="Ref By"></div>
+        </div>
+        <button id="saveBtn" class="btn-action" style="background:var(--primary)" onclick="addPerson()">SAVE DATA</button>
     </div>
+    <div class="d-flex justify-content-between px-2 mb-2"><span class="fw-bold text-muted">Total: <span id="listCount" class="text-primary">0</span></span></div>
+    <div id="personListContainer" style="padding-bottom: 20px;"></div>
+</div>
 
-    <ul class="nav nav-pills nav-pills-custom justify-content-center mb-2" id="mainTabs">
-        <li class="nav-item"><button class="nav-link active" onclick="switchProject('health')">आरोग्य</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="switchProject('anemia')">ॲनिमिया</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="switchProject('water')">जलसंचय</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="switchProject('network')">नेटवर्क</button></li>
-        <li class="nav-item"><button class="nav-link" onclick="switchProject('reports')"><i class="fas fa-download"></i></button></li>
+<div id="followupSection" class="page-section">
+    <div class="project-tabs">
+        <button class="project-tab-btn active" onclick="switchProject('health')">आरोग्य</button>
+        <button class="project-tab-btn" onclick="switchProject('anemia')">ॲनिमिया</button>
+        <button class="project-tab-btn" onclick="switchProject('water')">जलसंचय</button>
+        <button class="project-tab-btn" onclick="switchProject('network')">नेटवर्क</button>
+    </div>
+    <div class="custom-card">
+        <h6 class="fw-bold text-warning mb-3">फॉलो-अप सेट करा</h6>
+        <label class="form-label">व्यक्ती निवडा:</label><select id="followupPersonSelect" class="form-select mb-3"></select>
+        <label class="form-label">चर्चा:</label><input type="text" id="fRemark" class="form-control mb-3" placeholder="Remark">
+        <label class="form-label">पुढील ३ तारखा:</label>
+        <div class="d-flex gap-2 mb-3">
+            <input type="date" id="fDate1" class="form-control">
+            <input type="date" id="fDate2" class="form-control">
+            <input type="date" id="fDate3" class="form-control">
+        </div>
+        <button class="btn-action" style="background:var(--saffron)" onclick="addFollowup()">SAVE REMINDER</button>
+    </div>
+    <div id="followupHistoryList"></div>
+</div>
+
+<div id="salesSection" class="page-section">
+    <div class="project-tabs">
+        <button class="project-tab-btn active" onclick="switchProject('health')">आरोग्य</button>
+        <button class="project-tab-btn" onclick="switchProject('anemia')">ॲनिमिया</button>
+        <button class="project-tab-btn" onclick="switchProject('water')">जलसंचय</button>
+        <button class="project-tab-btn" onclick="switchProject('network')">नेटवर्क</button>
+    </div>
+    <div class="custom-card">
+        <h6 class="fw-bold text-success mb-3">नवीन विक्री (Invoice)</h6>
+        <label class="form-label">ग्राहक:</label><select id="salePersonSelect" class="form-select mb-3"></select>
+        <label class="form-label">प्रॉडक्ट:</label>
+        <select id="productSelect" class="form-select mb-3">
+            <option value="none">-- Select --</option>
+            <option value="राईस ब्रान तेल 5 लिटर">राईस ब्रान तेल 5L</option><option value="न्यूट्रिलाइट">न्यूट्रिलाइट</option><option value="nutricharge woman">Nutricharge Woman</option><option value="Other">Other</option>
+        </select>
+        <label class="form-label">तारीख:</label><input type="date" id="saleDate" class="form-control mb-3">
+        <button class="btn-action" style="background:var(--green)" onclick="addSale()">SALE ENTRY</button>
+    </div>
+    <div id="salesList"></div>
+</div>
+
+<div id="reportsSection" class="page-section">
+    <ul class="nav nav-pills mb-3 justify-content-center" id="reportTabs">
+        <li class="nav-item"><button class="nav-link active" onclick="showReportTab('consolidated')">📊 Consolidated</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="showReportTab('segment')">📑 Segment</button></li>
+        <li class="nav-item"><button class="nav-link" onclick="showReportTab('meetings')">🗓️ Meetings</button></li>
     </ul>
 
-    <div id="contentArea">
-        <div id="projectArea">
-            <div class="text-center mb-2"><span class="badge bg-primary fs-6" id="currentProjectTitle">Title</span></div>
-
-            <div class="custom-card p-1 mb-2">
-                <ul class="nav nav-pills nav-fill" id="subTabs" role="tablist">
-                    <li class="nav-item"><button class="nav-link active text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-list">📋 लिस्ट</button></li>
-                    <li class="nav-item"><button class="nav-link text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-followup">📞 फॉलो-अप</button></li>
-                    <li class="nav-item"><button class="nav-link text-dark py-1" data-bs-toggle="pill" data-bs-target="#sub-sales">🛒 विक्री</button></li>
-                </ul>
-            </div>
-
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="sub-list">
-                    <div class="custom-card p-3 border-top border-4 border-primary">
-                        <div class="row g-3">
-                            <div class="col-12 bg-light p-2 rounded border border-primary">
-                                <label class="fw-bold text-primary small"><i class="fas fa-sync"></i> Smart Import (फक्त नवीन नावे):</label>
-                                <select id="importSelect" class="form-select mt-1" onchange="fillFromImport()">
-                                    <option value="">-- नाव निवडा --</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12">
-                                <button class="btn btn-warning w-100 fw-bold text-white shadow-sm" onclick="pickContact()">
-                                    <i class="fas fa-address-book me-2"></i> मोबाईल कॉन्टॅक्ट कॉपी करा
-                                </button>
-                            </div>
-                            
-                            <div class="col-12">
-                                <label class="form-label">नाव (Name) *</label>
-                                <input type="text" id="pName" class="form-control" placeholder="पूर्ण नाव">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">मोबाईल *</label>
-                                <input type="number" id="pMobile" class="form-control" placeholder="Mobile">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">गाव (Village)</label>
-                                <input type="text" id="pVillage" class="form-control" placeholder="गाव">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">व्यवसाय</label>
-                                <input type="text" id="pProfession" class="form-control" placeholder="Business">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">प्रपोजर</label>
-                                <input type="text" id="pProposer" class="form-control" placeholder="Ref By">
-                            </div>
-                            
-                            <div class="col-12 mt-3">
-                                <button id="saveBtn" class="btn btn-primary btn-big shadow" onclick="addPerson()">
-                                    SAVE DATA
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="custom-card">
-                        <div class="p-2 bg-light border-bottom small fw-bold text-center">सेव केलेली लिस्ट (Compact View)</div>
-                        <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
-                            <table class="table table-striped table-bordered mb-0 compact-table table-sm">
-                                <thead class="sticky-top bg-light">
-                                    <tr>
-                                        <th style="width:30%">नाव</th>
-                                        <th style="width:20%">गाव</th>
-                                        <th style="width:25%">मोबाईल</th>
-                                        <th style="width:25%">कृती</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="personTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="sub-followup">
-                    <div class="custom-card p-3 border-top border-4 border-warning">
-                        <label class="form-label">व्यक्ती निवडा:</label>
-                        <select id="followupPersonSelect" class="form-select mb-2"></select>
-                        <label class="form-label">चर्चा (Remark):</label>
-                        <input type="text" id="fRemark" class="form-control mb-2" placeholder="Remark...">
-                        <label class="form-label text-primary">पुढील ३ तारखा:</label>
-                        <div class="d-flex gap-1 mb-3">
-                            <input type="date" id="fDate1" class="form-control">
-                            <input type="date" id="fDate2" class="form-control">
-                            <input type="date" id="fDate3" class="form-control">
-                        </div>
-                        <button class="btn btn-warning w-100 text-white fw-bold py-2" onclick="addFollowup()">Save Reminder</button>
-                    </div>
-                    <div class="custom-card p-2" id="followupHistoryList" style="max-height: 50vh; overflow-y: auto; font-size: 12px;"></div>
-                </div>
-
-                <div class="tab-pane fade" id="sub-sales">
-                    <div class="custom-card p-3 border-top border-4 border-success">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">ग्राहक:</label>
-                                <select id="salePersonSelect" class="form-select"></select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">प्रॉडक्ट:</label>
-                                <select id="productSelect" class="form-select">
-                                    <option value="none">-- प्रॉडक्ट निवडा --</option>
-                                    <option value="राईस ब्रान तेल 5 लिटर">राईस ब्रान तेल 5 लिटर</option>
-                                    <option value="मीठ 1 किलो">मीठ 1 किलो</option>
-                                    <option value="चहा पावडर 500 ग्रॅम">चहा पावडर 500 ग्रॅम</option>
-                                    <option value="मिरची पावडर 200 ग्रॅम">मिरची पावडर 200 ग्रॅम</option>
-                                    <option value="जिरे 100 ग्रॅम">जिरे 100 ग्रॅम</option>
-                                    <option value="हळद पावडर 200 ग्रॅम">हळद पावडर 200 ग्रॅम</option>
-                                    <option value="अंगाचे साबण">अंगाचे साबण</option>
-                                    <option value="खोबरेल तेल 250ml">खोबरेल तेल 250ml</option>
-                                    <option value="पेस्ट 100 ग्रॅम">पेस्ट 100 ग्रॅम</option>
-                                    <option value="साबण 100 ग्रॅम">साबण 100 ग्रॅम</option>
-                                    <option value="पावडर 150 ग्रॅम">पावडर 150 ग्रॅम</option>
-                                    <option value="ग्लो अँड लव्हल क्रीम 50 ग्रॅम">ग्लो अँड लव्हल क्रीम 50 ग्रॅम</option>
-                                    <option value="क्रीम 30 ग्रॅम">क्रीम 30 ग्रॅम</option>
-                                    <option value="धने पावडर 200 ग्रॅम">धने पावडर 200 ग्रॅम</option>
-                                    <option value="मसाला 100 ग्रॅम">मसाला 100 ग्रॅम</option>
-                                    <option value="अगरबत्ती 150 ग्रॅम">अगरबत्ती 150 ग्रॅम</option>
-                                    <option value="हेल्थ गार्ड राईस ब्रॅन ऑईल 1500 gm">हेल्थ गार्ड राईस ब्रॅन ऑईल 1500 gm</option>
-                                    <option value="टॉयलेट क्लिनर">टॉयलेट क्लिनर</option>
-                                    <option value="टूथब्रश">टूथब्रश</option>
-                                    <option value="शॅम्पू 80ml">शॅम्पू 80ml</option>
-                                    <option value="न्यूट्रिलाइट">न्यूट्रिलाइट</option>
-                                    <option value="कॉफी 50 ग्रॅम">कॉफी 50 ग्रॅम</option>
-                                    <option value="वॉशिंग पावडर 1 किलो">वॉशिंग पावडर 1 किलो</option>
-                                    <option value="साबण 110 ग्रॅम">साबण 110 ग्रॅम</option>
-                                    <option value="ग्लास क्लिनर 500ml">ग्लास क्लिनर 500ml</option>
-                                    <option value="फरशी क्लिनर 500ml">फरशी क्लिनर 500ml</option>
-                                    <option value="पंचतुलसी ड्रॉप 30ml">पंचतुलसी ड्रॉप 30ml</option>
-                                    <option value="फुट केअर क्रीम 50 ग्रॅम">फुट केअर क्रीम 50 ग्रॅम</option>
-                                    <option value="बॉडी लोशन 200ml">बॉडी लोशन 200ml</option>
-                                    <option value="हँड वॉश 300ml">हँड वॉश 300ml</option>
-                                    <option value="दंतमंजन 75 ग्रॅम">दंतमंजन 75 ग्रॅम</option>
-                                    <option value="डिश वॉश 500ml">डिश वॉश 500ml</option>
-                                    <option value="nutricharge woman">Nutricharge Woman</option>
-                                    <option value="फेस वॉश">फेस वॉश</option>
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">तारीख:</label>
-                                <input type="date" id="saleDate" class="form-control">
-                            </div>
-                            <div class="col-6 d-flex align-items-end">
-                                <button class="btn btn-success w-100 fw-bold py-2" onclick="addSale()">Sale Entry</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="salesList" class="p-2" style="font-size: 12px;"></div>
-                </div>
-            </div>
+    <div id="tab-consolidated">
+        <div class="row g-2 mb-3">
+            <div class="col-6"><div class="stat-card bg-total"><div class="stat-num" id="repTotalMem">0</div><div class="stat-label">Total Members</div></div></div>
+            <div class="col-6"><div class="stat-card bg-sales"><div class="stat-num" id="repTotalSale">0</div><div class="stat-label">Total Sales</div></div></div>
+        </div>
+        
+        <div class="custom-card text-center py-3 mb-3 border-warning">
+            <h6 class="mb-2 text-warning"><i class="fas fa-shield-alt"></i> Data Backup</h6>
+            <button class="btn btn-sm btn-dark me-2" onclick="backupAllData()">Download Backup</button>
+            <button class="btn btn-sm btn-outline-dark" onclick="document.getElementById('restoreFile').click()">Restore File</button>
+            <input type="file" id="restoreFile" style="display:none" onchange="restoreBackup(this.files[0])">
         </div>
 
-        <div id="masterReportsArea" style="display:none;">
-            <div class="custom-card p-4 text-center">
-                <h5>Download Data</h5>
-                <div class="d-flex justify-content-center gap-3 mt-3">
-                    <button class="btn btn-success btn-sm" onclick="downloadExcel()"><i class="fas fa-file-excel"></i> Excel</button>
-                    <button class="btn btn-danger btn-sm" onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
-                </div>
+        <div class="custom-card">
+            <h6 class="text-primary fw-bold mb-3">Master Summary</h6>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-hover" id="fullTableConsolidated">
+                    <thead class="table-light"><tr><th>Name</th><th>Project</th><th>Village</th><th>Sales</th></tr></thead>
+                    <tbody id="tblConsolidated"></tbody>
+                </table>
             </div>
-            <table class="table d-none" id="exportTable"><thead><tr><th>Abhiyan</th><th>Name</th><th>Village</th><th>Mobile</th><th>Proposer</th><th>Sales</th></tr></thead><tbody id="exportTableBody"></tbody></table>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button>
+                <button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button>
+            </div>
         </div>
     </div>
+
+    <div id="tab-segment" style="display:none;">
+        <select id="reportSegmentSelect" class="form-select mb-3" onchange="renderSegmentReport()">
+            <option value="health">आरोग्य अभियान</option>
+            <option value="anemia">ॲनिमिया मुक्त</option>
+            <option value="water">जलसंचय</option>
+            <option value="network">नेटवर्क</option>
+        </select>
+        <div class="custom-card">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped" id="fullTableSegment">
+                    <thead><tr><th>Name</th><th>Mobile</th><th>Village</th><th>Ref</th></tr></thead>
+                    <tbody id="tblSegment"></tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn btn-sm btn-success" onclick="downloadExcel('segment')">Excel</button>
+                <button class="btn btn-sm btn-danger" onclick="downloadPDF('segment')">PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-meetings" style="display:none;">
+        <div class="custom-card">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered" id="fullTableMeetings">
+                    <thead><tr><th>Date</th><th>Title</th><th>Status</th><th>Remark</th></tr></thead>
+                    <tbody id="tblMeetings"></tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn btn-sm btn-success" onclick="downloadExcel('meetings')">Excel</button>
+                <button class="btn btn-sm btn-danger" onclick="downloadPDF('meetings')">PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="meetingModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">🗓️ Meeting Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="meetId">
+        <label class="form-label">Title:</label><input type="text" id="meetTitle" class="form-control mb-2">
+        <label class="form-label">Date:</label><input type="date" id="meetDate" class="form-control mb-2">
+        <label class="form-label">Time:</label><input type="time" id="meetTime" class="form-control mb-2">
+        <label class="form-label">Status:</label>
+        <select id="meetStatus" class="form-select mb-2"><option value="Pending">Pending</option><option value="Done">Done</option><option value="Postponed">Postponed</option></select>
+        <label class="form-label">Remark:</label><textarea id="meetRemark" class="form-control mb-2"></textarea>
+        <button class="btn btn-primary w-100" onclick="saveMeeting()">Save</button>
+        <button class="btn btn-danger w-100 mt-2" onclick="deleteMeeting()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white"><h5 class="modal-title">🧾 Invoice</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="invoiceContent" style="font-family: monospace;"></div>
+      <div class="modal-footer"><button class="btn btn-primary" onclick="printInvoice()">Print</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="todayPopup" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-danger text-white"><h5 class="modal-title">🔔 Today's Tasks</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="todayPopupBody"></div>
+      <div class="modal-footer justify-content-center"><button class="btn btn-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal">OK</button></div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCny9svhGUs3Ja5OrTHfH5Kqj05GW2S0RE",
-      authDomain: "dsworldcrm.firebaseapp.com",
-      projectId: "dsworldcrm",
-      storageBucket: "dsworldcrm.firebasestorage.app",
-      messagingSenderId: "449729131508",
-      appId: "1:449729131508:web:61cdd1de17b151717c3fa1"
-    };
+    // --- CONFIG ---
+    const firebaseConfig = { apiKey: "AIzaSyCny9svhGUs3Ja5OrTHfH5Kqj05GW2S0RE", authDomain: "dsworldcrm.firebaseapp.com", projectId: "dsworldcrm", storageBucket: "dsworldcrm.firebasestorage.app", messagingSenderId: "449729131508", appId: "1:449729131508:web:61cdd1de17b151717c3fa1" };
     firebase.initializeApp(firebaseConfig);
     const dbRef = firebase.firestore();
     const DOC_ID = "mainData"; const COL_NAME = "crm_data"; 
 
-    let db = { currentProject: 'health', projects: { 'health': { title: 'आरोग्य अभियान', people: [], followups: [], sales: [] }, 'anemia': { title: 'ॲनिमिया मुक्त', people: [], followups: [], sales: [] }, 'water': { title: 'जलसंचय', people: [], followups: [], sales: [] }, 'network': { title: 'नेटवर्क', people: [], followups: [], sales: [] } } };
+    // --- DATA ---
+    let db = { meetings: [], currentProject: 'health', projects: { 'health': { title: 'आरोग्य अभियान', people: [], followups: [], sales: [] }, 'anemia': { title: 'ॲनिमिया मुक्त', people: [], followups: [], sales: [] }, 'water': { title: 'जलसंचय', people: [], followups: [], sales: [] }, 'network': { title: 'नेटवर्क', people: [], followups: [], sales: [] } } };
     let editIndex = null;
+    let currentView = 'home';
 
-    window.onload = function() { document.getElementById('saleDate').valueAsDate = new Date(); loadFromFirebase(); };
+    window.onload = function() {
+        document.getElementById('currentDateDisplay').innerText = new Date().toDateString();
+        document.getElementById('saleDate').valueAsDate = new Date();
+        loadFromFirebase();
+    };
 
+    // --- FIREBASE SYNC ---
     function loadFromFirebase() {
         dbRef.collection(COL_NAME).doc(DOC_ID).get().then((doc) => {
-            if (doc.exists) { db = doc.data(); } else { saveToFirebase(); }
-            updateStatus("Online");
-        }).catch((error) => { updateStatus("Offline"); }).finally(() => {
+            if (doc.exists) { db = doc.data(); if(!db.meetings) db.meetings=[]; } else { saveToFirebase(); }
+            updateStatus("Online", "success");
+        }).catch(() => { updateStatus("Offline", "danger"); }).finally(() => {
             document.getElementById('loadingOverlay').style.display = 'none';
-            renderCurrentProject(); checkReminders();
+            renderCalendar(); renderMeetingsList(); checkTodayPopup(); updateDailyStats();
         });
     }
-
     function saveToFirebase() {
-        updateStatus("Saving...");
+        updateStatus("Saving...", "warning");
         dbRef.collection(COL_NAME).doc(DOC_ID).set(db).then(() => {
-            updateStatus("Online"); renderCurrentProject(); checkReminders();
-        }).catch((error) => { updateStatus("Error"); });
+            updateStatus("Online", "success");
+            if(currentView === 'planner') { renderCalendar(); renderMeetingsList(); } 
+            else if(currentView === 'reports') { renderAllReports(); } 
+            else if(currentView !== 'home') renderCurrentView();
+            updateDailyStats();
+        }).catch(() => updateStatus("Error", "danger"));
     }
+    function updateStatus(msg, type) { const b = document.getElementById('statusBadge'); b.innerText = msg; b.className = `badge bg-${type} text-${type==='warning'?'dark':'white'} border px-2 py-1`; }
 
-    function updateStatus(msg) {
-        const badge = document.getElementById('statusBadge'); badge.innerText = msg;
-        if(msg==="Online") badge.className = "badge bg-success text-white border px-2 py-1";
-        else badge.className = "badge bg-danger text-white border px-2 py-1";
+    // --- NAVIGATION ---
+    window.openSection = function(sec) {
+        currentView = sec;
+        document.getElementById('homeSection').style.display = 'none';
+        document.getElementById('backBtn').style.display = 'block';
+        ['listSection', 'followupSection', 'salesSection', 'reportsSection', 'plannerSection'].forEach(id => document.getElementById(id).style.display = 'none');
+        if(sec === 'planner') { document.getElementById('plannerSection').style.display = 'block'; renderCalendar(); renderMeetingsList(); }
+        else if(sec === 'reports') { document.getElementById('reportsSection').style.display = 'block'; renderAllReports(); }
+        else { document.getElementById(sec + 'Section').style.display = 'block'; renderCurrentView(); }
     }
-
+    window.goHome = function() {
+        currentView = 'home';
+        ['listSection', 'followupSection', 'salesSection', 'reportsSection', 'plannerSection'].forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById('homeSection').style.display = 'block';
+        document.getElementById('backBtn').style.display = 'none';
+        renderCalendar(); renderMeetingsList();
+    }
     window.switchProject = function(key) {
-        if(key === 'reports') {
-            document.getElementById('projectArea').style.display = 'none';
-            document.getElementById('masterReportsArea').style.display = 'block';
-            renderMasterReport();
-        } else {
-            document.getElementById('projectArea').style.display = 'block';
-            document.getElementById('masterReportsArea').style.display = 'none';
-            db.currentProject = key;
-            renderCurrentProject();
-        }
-        document.querySelectorAll('#mainTabs button').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        resetForm();
+        db.currentProject = key;
+        const map = {'health':0,'anemia':1,'water':2,'network':3};
+        document.querySelectorAll('.project-tabs').forEach(grp => {
+            Array.from(grp.children).forEach(b => b.classList.remove('active'));
+            grp.children[map[key]].classList.add('active');
+        });
+        renderCurrentView();
     }
 
-    window.renderCurrentProject = function() {
+    // --- RENDER VIEWS ---
+    function renderCurrentView() {
+        if(currentView === 'home' || currentView === 'reports' || currentView === 'planner') return;
         const proj = db.projects[db.currentProject];
-        document.getElementById('currentProjectTitle').innerText = proj.title;
-        document.getElementById('topTotal').innerText = proj.people.length;
-        document.getElementById('topFollow').innerText = proj.followups.length;
-        document.getElementById('topSales').innerText = proj.sales.length;
-
-        const tbody = document.getElementById('personTableBody');
-        const selF = document.getElementById('followupPersonSelect');
-        const selS = document.getElementById('salePersonSelect');
-        tbody.innerHTML = ''; selF.innerHTML = '<option value="">-- Select --</option>'; selS.innerHTML = '<option value="">-- Select --</option>';
-
-        proj.people.forEach((p, idx) => {
-            let opt = `<option value="${idx}">${p.name} (${p.village})</option>`;
-            selF.innerHTML += opt; selS.innerHTML += opt;
-        });
-
-        // Compact Table Row
-        proj.people.map((p, i) => ({...p, oIdx: i})).reverse().forEach(p => {
-            tbody.innerHTML += `<tr>
-                <td class="fw-bold text-primary">${p.name}</td>
-                <td>${p.village}</td>
-                <td>${p.mobile}</td>
-                <td class="text-center">
-                    <button class="btn btn-xs btn-warning" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
-                    <a href="https://wa.me/91${p.mobile}" class="btn btn-xs btn-success"><i class="fab fa-whatsapp"></i></a>
-                    <button class="btn btn-xs btn-danger" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        });
-
-        const fList = document.getElementById('followupHistoryList'); fList.innerHTML = '';
-        proj.followups.slice().reverse().forEach(f => {
-            fList.innerHTML += `<div class="p-2 mb-1 bg-light border-start border-3 border-warning rounded"><strong>${f.personName}</strong>: ${f.remark} <span class="float-end text-muted small">${f.entryDate}</span></div>`;
-        });
-
-        const sList = document.getElementById('salesList'); sList.innerHTML = '';
-        proj.sales.slice().reverse().forEach(s => {
-            sList.innerHTML += `<div class="p-2 mb-1 bg-light border-start border-3 border-success rounded"><strong>${s.personName}</strong>: ${s.product} <span class="float-end text-muted small">${s.date}</span></div>`;
-        });
-
-        loadImportOptions();
-    }
-
-    function loadImportOptions() {
-        const select = document.getElementById('importSelect');
-        select.innerHTML = '<option value="">-- Smart Import (इतर लिस्ट) --</option>';
-        const currentMobiles = db.projects[db.currentProject].people.map(p => String(p.mobile).trim());
-        const addedToDropdown = new Set();
-
-        for (const key in db.projects) {
-            if (key === db.currentProject) continue;
-            db.projects[key].people.forEach(p => {
-                const mob = String(p.mobile).trim();
-                if (!currentMobiles.includes(mob) && !addedToDropdown.has(mob)) {
-                    const pStr = JSON.stringify(p).replace(/"/g, '&quot;');
-                    select.innerHTML += `<option value="${pStr}">${p.name} - ${p.village} (${db.projects[key].title})</option>`;
-                    addedToDropdown.add(mob);
+        
+        // LIST & SEARCH
+        if(currentView === 'list') {
+            document.getElementById('listCount').innerText = proj.people.length;
+            const container = document.getElementById('personListContainer'); container.innerHTML = '';
+            const searchVal = document.getElementById('searchBox').value.toLowerCase();
+            proj.people.map((p,i)=>({...p, oIdx:i})).reverse().forEach(p => {
+                if(p.name.toLowerCase().includes(searchVal) || String(p.mobile).includes(searchVal)) {
+                    // NEW CARD UI
+                    container.innerHTML += `
+                    <div class="prospect-card">
+                        <div class="prospect-header">
+                            <div class="avatar">${p.name.charAt(0)}</div>
+                            <div class="info">
+                                <h6>${p.name}</h6>
+                                <small><i class="fas fa-map-marker-alt"></i> ${p.village} | 📞 ${p.mobile}</small>
+                                <span class="ref-badge">Ref: ${p.proposer}</span>
+                            </div>
+                        </div>
+                        <div class="action-row">
+                            <a href="tel:${p.mobile}" class="btn-act btn-call"><i class="fas fa-phone"></i></a>
+                            <a href="https://wa.me/91${p.mobile}" class="btn-act btn-wa"><i class="fab fa-whatsapp"></i></a>
+                            <button class="btn-act btn-edit" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
+                            <button class="btn-act btn-del" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>`;
                 }
             });
+            loadImportOptions();
         }
-    }
-
-    window.fillFromImport = function() {
-        const val = document.getElementById('importSelect').value;
-        if(!val) return;
-        const p = JSON.parse(val);
-        document.getElementById('pName').value = p.name || '';
-        document.getElementById('pMobile').value = p.mobile || '';
-        document.getElementById('pVillage').value = p.village || '';
-        document.getElementById('pProfession').value = p.profession || '';
-        document.getElementById('pProposer').value = p.proposer || '';
-        document.getElementById('importSelect').value = "";
-    }
-
-    window.addPerson = function() {
-        const p = {
-            name: document.getElementById('pName').value,
-            mobile: document.getElementById('pMobile').value,
-            village: document.getElementById('pVillage').value,
-            profession: document.getElementById('pProfession').value,
-            proposer: document.getElementById('pProposer').value
-        };
-
-        if(!p.name || !p.mobile || !p.village) { alert("नाव, मोबाईल, गाव आवश्यक आहे!"); return; }
         
-        const existingIdx = db.projects[db.currentProject].people.findIndex(x => String(x.mobile) === String(p.mobile));
-        if(existingIdx !== -1 && existingIdx !== editIndex) { alert("मोबाईल नंबर आधीच आहे!"); return; }
-
-        if (editIndex !== null) {
-            db.projects[db.currentProject].people[editIndex] = p;
-            alert("Updated!");
-        } else {
-            db.projects[db.currentProject].people.push(p);
-            alert("Saved!");
-        }
-        saveToFirebase(); resetForm();
-    }
-
-    window.editPerson = function(idx) {
-        const p = db.projects[db.currentProject].people[idx];
-        document.getElementById('pName').value = p.name;
-        document.getElementById('pMobile').value = p.mobile;
-        document.getElementById('pVillage').value = p.village;
-        document.getElementById('pProfession').value = p.profession;
-        document.getElementById('pProposer').value = p.proposer;
-        editIndex = idx;
-        const btn = document.getElementById('saveBtn');
-        btn.innerText = "UPDATE DATA"; btn.classList.replace('btn-primary','btn-warning');
-        document.getElementById('sub-list').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function resetForm() {
-        ['pName','pMobile','pVillage','pProfession','pProposer'].forEach(id => document.getElementById(id).value = '');
-        editIndex = null;
-        const btn = document.getElementById('saveBtn');
-        btn.innerText = "SAVE DATA"; btn.classList.replace('btn-warning','btn-primary');
-    }
-
-    window.delPerson = function(idx) { if(confirm("Delete?")) { db.projects[db.currentProject].people.splice(idx, 1); saveToFirebase(); } }
-
-    window.addFollowup = function() {
-        const idx = document.getElementById('followupPersonSelect').value;
-        if(idx === "") { alert("Select Person"); return; }
-        const p = db.projects[db.currentProject].people[idx];
-        let dates = []; ['fDate1','fDate2','fDate3'].forEach(id => { if(document.getElementById(id).value) dates.push(document.getElementById(id).value); });
-        db.projects[db.currentProject].followups.push({ personName: p.name, mobile: p.mobile, proposer: p.proposer, remark: document.getElementById('fRemark').value, dates: dates, entryDate: new Date().toISOString().split('T')[0] });
-        saveToFirebase(); alert("Reminder Saved!"); document.getElementById('fRemark').value = '';
-    }
-
-    window.addSale = function() {
-        const idx = document.getElementById('salePersonSelect').value; const prod = document.getElementById('productSelect').value;
-        if(idx === "" || prod === "none") { alert("Select Customer & Product"); return; }
-        const p = db.projects[db.currentProject].people[idx]; const date = document.getElementById('saleDate').value;
-        let dates = []; let base = new Date(date); const addD = (n) => { let d = new Date(base); d.setDate(base.getDate()+n); return d.toISOString().split('T')[0]; };
-        
-        if(prod.includes("5 लिटर") || prod.includes("500ml") || prod.includes("500 ग्रॅम") || prod.includes("1 किलो")) { dates.push(addD(15)); dates.push(addD(25)); }
-        else if(prod.includes("nutri") || prod.includes("न्यूट्रिलाइट")) { dates.push(addD(7)); dates.push(addD(15)); dates.push(addD(25)); }
-        else { dates.push(addD(5)); }
-
-        db.projects[db.currentProject].followups.push({ personName: p.name, mobile: p.mobile, remark: `Auto: ${prod} Sale`, dates: dates, entryDate: date });
-        db.projects[db.currentProject].sales.push({ personName: p.name, product: prod, date });
-        saveToFirebase(); alert("Sale Saved!");
-    }
-
-    window.checkReminders = function() {
-        const today = new Date().toISOString().split('T')[0];
-        const list = document.getElementById('reminderList'); const section = document.getElementById('reminderSection');
-        list.innerHTML = ''; let hasTask = false;
-        for(let k in db.projects) {
-            db.projects[k].followups.forEach(f => {
-                if(f.dates.includes(today)) { hasTask = true; list.innerHTML += `<span class="badge bg-white text-dark me-1 border p-2 mb-1 d-block text-start">${f.personName}: ${f.remark} <a href="tel:${f.mobile}" class="float-end text-primary"><i class="fas fa-phone"></i></a></span>`; }
+        // FOLLOWUP
+        if(currentView === 'followup') {
+            const sel = document.getElementById('followupPersonSelect'); sel.innerHTML='<option value="">Select</option>';
+            proj.people.forEach((p,i)=> sel.innerHTML+=`<option value="${i}">${p.name}</option>`);
+            const h = document.getElementById('followupHistoryList'); h.innerHTML='';
+            proj.followups.slice().reverse().forEach(f => {
+                const priority = getPriority(f.dates[0]); // Feature 1
+                const color = priority==='High'?'#dc3545':(priority==='Med'?'#ffc107':'#198754');
+                h.innerHTML+=`<div class="list-item" style="border-left-color:${color}"><div><h6>${f.personName} <span class="badge bg-secondary" style="font-size:10px">${priority}</span></h6><small>${f.remark}</small></div><small class="text-muted">${f.entryDate}</small></div>`;
             });
         }
-        section.style.display = hasTask ? 'block' : 'none';
-    }
-
-    window.renderMasterReport = function() {
-        const tbody = document.getElementById('exportTableBody'); tbody.innerHTML = '';
-        for (const k in db.projects) {
-            const pr = db.projects[k];
-            pr.people.forEach(p => { let s = pr.sales.filter(x => x.personName === p.name).map(x => x.product).join(', '); tbody.innerHTML += `<tr><td>${pr.title}</td><td>${p.name}</td><td>${p.village}</td><td>${p.mobile}</td><td>${p.proposer}</td><td>${s}</td></tr>`; });
+        // SALES (INVOICE)
+        if(currentView === 'sales') {
+            const sel = document.getElementById('salePersonSelect'); sel.innerHTML='<option value="">Select</option>';
+            proj.people.forEach((p,i)=> sel.innerHTML+=`<option value="${i}">${p.name}</option>`);
+            const h = document.getElementById('salesList'); h.innerHTML='';
+            proj.sales.slice().reverse().forEach(s => {
+                h.innerHTML+=`<div class="list-item" style="border-left-color:var(--green)">
+                    <div><h6>${s.personName}</h6><small>${s.product}</small></div>
+                    <div><small class="d-block text-end">${s.date}</small><button class="btn btn-sm btn-outline-dark py-0" onclick='generateInvoice(${JSON.stringify(s)})'>🧾 Bill</button></div>
+                </div>`;
+            });
         }
     }
-    window.downloadExcel = function() { renderMasterReport(); const wb = XLSX.utils.table_to_book(document.getElementById('exportTable'), {sheet: "Data"}); XLSX.writeFile(wb, "Abhiyan_Data.xlsx"); }
-    window.downloadPDF = function() { renderMasterReport(); const element = document.getElementById('exportTable'); element.classList.remove('d-none'); html2pdf().from(element).save(); setTimeout(() => element.classList.add('d-none'), 1000); }
-    window.pickContact = async function() { const props = ['name', 'tel']; try { if ('contacts' in navigator && 'select' in navigator.contacts) { const contacts = await navigator.contacts.select(props, { multiple: false }); if(contacts.length > 0) { document.getElementById('pName').value = contacts[0].name[0]; document.getElementById('pMobile').value = contacts[0].tel[0]; } } else { alert("Try Chrome Android"); } } catch (ex) { console.log("Cancelled"); } }
+
+    // --- PRO FEATURES ---
+    function getPriority(date){ if(!date) return "Low"; const d = new Date(date); const diff = Math.ceil((d - new Date())/(1000*60*60*24)); return diff<=0 ? "High" : (diff<=2 ? "Med" : "Low"); }
+    
+    function generateInvoice(sale) {
+        const html = `<div style="text-align:center; padding:10px;">
+            <h3>INVOICE</h3><hr><p><b>Customer:</b> ${sale.personName}</p><p><b>Item:</b> ${sale.product}</p><p><b>Date:</b> ${sale.date}</p><hr><p>Thank you for business!</p></div>`;
+        document.getElementById('invoiceContent').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('invoiceModal')).show();
+    }
+    function printInvoice() { const c = document.getElementById('invoiceContent').innerHTML; const w = window.open(); w.document.write(c); w.print(); w.close(); }
+
+    window.backupAllData = function() {
+        const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Mission2026_Backup.json"; a.click();
+    }
+    window.restoreBackup = function(file) {
+        const reader = new FileReader();
+        reader.onload = e => { db = JSON.parse(e.target.result); saveToFirebase(); alert("Restored Successfully!"); location.reload(); };
+        reader.readAsText(file);
+    }
+
+    // --- ACTIONS ---
+    window.addPerson = function() { const p = {name:document.getElementById('pName').value, mobile:document.getElementById('pMobile').value, village:document.getElementById('pVillage').value, profession:document.getElementById('pProfession').value, proposer:document.getElementById('pProposer').value}; if(!p.name || !p.mobile) return alert("Required"); if(editIndex!==null) db.projects[db.currentProject].people[editIndex]=p; else db.projects[db.currentProject].people.push(p); saveToFirebase(); resetForm(); }
+    window.editPerson = function(idx) { const p = db.projects[db.currentProject].people[idx]; document.getElementById('pName').value=p.name; document.getElementById('pMobile').value=p.mobile; document.getElementById('pVillage').value=p.village; document.getElementById('pProfession').value=p.profession; document.getElementById('pProposer').value=p.proposer; editIndex=idx; document.getElementById('saveBtn').innerText="UPDATE"; window.scrollTo(0,0); }
+    function resetForm(){ ['pName','pMobile','pVillage','pProfession','pProposer'].forEach(id=>document.getElementById(id).value=''); editIndex=null; document.getElementById('saveBtn').innerText="SAVE DATA"; }
+    window.delPerson = function(idx) { if(confirm("Del?")) { db.projects[db.currentProject].people.splice(idx,1); saveToFirebase(); }}
+    function loadImportOptions() { const sel = document.getElementById('importSelect'); sel.innerHTML='<option>Smart Import</option>'; const cur = db.projects[db.currentProject].people.map(p=>String(p.mobile)); for(let k in db.projects) { if(k===db.currentProject) continue; db.projects[k].people.forEach(p=>{ if(!cur.includes(String(p.mobile))) sel.innerHTML+=`<option value='${JSON.stringify(p)}'>${p.name} (${db.projects[k].title})</option>`; }); } }
+    window.fillFromImport = function() { const v = document.getElementById('importSelect').value; if(v && v.includes('{')) { const p=JSON.parse(v); document.getElementById('pName').value=p.name; document.getElementById('pMobile').value=p.mobile; document.getElementById('pVillage').value=p.village; } }
+    window.addFollowup = function() { const i=document.getElementById('followupPersonSelect').value; if(i==="")return; const p=db.projects[db.currentProject].people[i]; let dates=[]; ['fDate1','fDate2','fDate3'].forEach(d=>{if(document.getElementById(d).value)dates.push(document.getElementById(d).value)}); db.projects[db.currentProject].followups.push({personName:p.name,mobile:p.mobile,remark:document.getElementById('fRemark').value,dates:dates,entryDate:new Date().toISOString().split('T')[0]}); saveToFirebase(); alert("Saved"); }
+    window.addSale = function() { const i=document.getElementById('salePersonSelect').value; if(i==="")return; const p=db.projects[db.currentProject].people[i]; const pr=document.getElementById('productSelect').value; db.projects[db.currentProject].sales.push({personName:p.name,product:pr,date:document.getElementById('saleDate').value}); saveToFirebase(); alert("Saved"); }
+    
+    // --- MEETINGS (SORTED & DELETE) ---
+    function renderCalendar() { const g=document.getElementById('calendarGrid'); const n=new Date(); document.getElementById('calMonthYear').innerText=n.toLocaleString('default',{month:'long'})+" "+n.getFullYear(); let h=''; ['S','M','T','W','T','F','S'].forEach(d=>h+=`<b>${d}</b>`); for(let i=1;i<=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();i++){ let d=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`; let cls=db.meetings.some(m=>m.date===d)?'cal-event':(i===n.getDate()?'cal-today':'cal-day'); h+=`<div class="${cls}" onclick="openMeetingModal(null,'${d}')">${i}</div>`; } g.innerHTML=h; }
+    
+    function renderMeetingsList() { 
+        const list = document.getElementById('plannerMeetingList'); list.innerHTML = '';
+        const sorted = db.meetings.sort((a,b) => {
+            const map = {'Pending':1,'Postponed':2,'Done':3};
+            return (map[a.status]||4) - (map[b.status]||4);
+        });
+        
+        sorted.forEach(m => {
+            let stClass = `status-${m.status || 'Pending'}`;
+            list.innerHTML += `
+            <div class="meeting-item ${stClass} d-flex justify-content-between align-items-center">
+                <div onclick='openMeetingModal(${JSON.stringify(m)})' style="flex-grow:1">
+                    <div class="d-flex justify-content-between"><strong>${m.title}</strong><span class="badge bg-secondary" style="font-size:10px">${m.status}</span></div>
+                    <small>${m.date} ${m.time||''} | ${m.remark || ''}</small>
+                </div>
+                <button class="btn btn-sm text-danger ms-2" onclick="deleteMeetingDirect(${m.id})"><i class="fas fa-trash"></i></button>
+            </div>`;
+        });
+    }
+    
+    function openMeetingModal(m,d) { if(m){document.getElementById('meetId').value=m.id; document.getElementById('meetTitle').value=m.title; document.getElementById('meetDate').value=m.date; document.getElementById('meetTime').value=m.time; document.getElementById('meetStatus').value=m.status; document.getElementById('meetRemark').value=m.remark;} else { document.getElementById('meetId').value=''; document.getElementById('meetTitle').value=''; document.getElementById('meetDate').value=d||''; } new bootstrap.Modal(document.getElementById('meetingModal')).show(); }
+    function saveMeeting() { const id=document.getElementById('meetId').value; const obj={id:id?id:Date.now(),title:document.getElementById('meetTitle').value,date:document.getElementById('meetDate').value,time:document.getElementById('meetTime').value,status:document.getElementById('meetStatus').value,remark:document.getElementById('meetRemark').value}; if(!obj.title) return alert("Title?"); if(id){const idx=db.meetings.findIndex(m=>m.id==id);if(idx!==-1)db.meetings[idx]=obj;}else{db.meetings.push(obj);} saveToFirebase(); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
+    
+    window.deleteMeetingDirect = function(id) {
+        if(confirm("Delete Meeting?")) { db.meetings = db.meetings.filter(m => m.id != id); saveToFirebase(); }
+    }
+    function deleteMeeting() { const id=document.getElementById('meetId').value; deleteMeetingDirect(id); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
+
+    // --- REPORTS ---
+    function renderAllReports() {
+        let tm=0, ts=0, tc=0; let mr=''; for(let k in db.projects){ tm+=db.projects[k].people.length; ts+=db.projects[k].sales.length; tc+=db.projects[k].followups.length; db.projects[k].people.forEach(p=>{ let s=db.projects[k].sales.filter(x=>x.personName===p.name).length; mr+=`<tr><td>${p.name}</td><td>${db.projects[k].title}</td><td>${p.village}</td><td>${s}</td></tr>`; }); }
+        document.getElementById('repTotalMem').innerText=tm; document.getElementById('repTotalSale').innerText=ts; document.getElementById('tblConsolidated').innerHTML=mr;
+        renderSegmentReport();
+        let mRow=''; db.meetings.forEach(m=>{ mRow+=`<tr><td>${m.date}</td><td>${m.title}</td><td>${m.status}</td><td>${m.remark}</td></tr>`; }); document.getElementById('tblMeetings').innerHTML=mRow;
+    }
+    window.renderSegmentReport=function(){ const k=document.getElementById('reportSegmentSelect').value; const p=db.projects[k]; document.getElementById('segTotalMem').innerText=p.people.length; document.getElementById('segTotalSale').innerText=p.sales.length; let r=''; p.people.forEach(x=> r+=`<tr><td>${x.name}</td><td>${x.mobile}</td><td>${x.village}</td><td>${x.proposer}</td></tr>`); document.getElementById('tblSegment').innerHTML=r; }
+    window.downloadExcel=function(t){ const tbl=(t==='meetings')?'fullTableMeetings':(t==='segment'?'fullTableSegment':'fullTableConsolidated'); const wb=XLSX.utils.table_to_book(document.getElementById(tbl),{sheet:"Data"}); XLSX.writeFile(wb, t+"_Report.xlsx"); }
+    window.downloadPDF=function(t){ let id=(t==='meetings')?'tab-meetings':(t==='segment'?'tab-segment':'tab-consolidated'); html2pdf().from(document.getElementById(id)).save(); }
+    
+    // Updates
+    function updateDailyStats() { const today=new Date().toISOString().split('T')[0]; let s=0; for(let k in db.projects) s+=db.projects[k].sales.filter(x=>x.date===today).length; if(s>0) document.getElementById('statusBadge').innerText += ` | Today Sales: ${s}`; }
+    function checkTodayPopup() { const t=new Date().toISOString().split('T')[0]; let l=[]; db.meetings.forEach(m=>{if(m.date===t && m.status!=='Done')l.push(`🗓️ ${m.title}`)}); if(l.length){ document.getElementById('todayPopupBody').innerHTML='<ul class="list-group">'+l.map(x=>`<li class="list-group-item">${x}</li>`).join('')+'</ul>'; new bootstrap.Modal(document.getElementById('todayPopup')).show(); } }
+    window.pickContact = async function() { try{const c = await navigator.contacts.select(['name','tel'],{multiple:false}); if(c.length){document.getElementById('pName').value=c[0].name[0]; document.getElementById('pMobile').value=c[0].tel[0];}}catch(e){} }
 </script>
 
 </body>
