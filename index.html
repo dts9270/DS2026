@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>क्रांतिकारी वर्ष 2026 (Report Fixed)</title>
+    <title>क्रांतिकारी वर्ष 2026 (Action Mode)</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -20,9 +20,33 @@
         body { font-family: 'Poppins', sans-serif; background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%); min-height: 100vh; padding-bottom: 70px; }
         
         #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        
         .app-header { background: white; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 0 0 20px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .header-title { font-weight: 800; color: var(--primary); text-transform: uppercase; font-size: 1.1rem; }
+
+        /* TOP STATS */
+        .top-stats-container { padding: 15px 20px; display: flex; gap: 15px; justify-content: center; }
+        
+        .today-circle {
+            width: 100px; height: 100px; 
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; cursor: pointer; box-shadow: 0 8px 15px rgba(255, 75, 43, 0.4);
+            border: 3px solid white; transition: transform 0.2s;
+        }
+        .today-circle:active { transform: scale(0.95); }
+        .circle-count { font-size: 32px; font-weight: 800; line-height: 1; }
+        .circle-label { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+
+        .upcoming-card {
+            flex: 1; height: 100px;
+            background: linear-gradient(135deg, #56CCF2, #2F80ED);
+            border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; cursor: pointer; box-shadow: 0 8px 15px rgba(47, 128, 237, 0.3);
+            border: 3px solid white; transition: transform 0.2s;
+        }
+        .upcoming-card:active { transform: scale(0.95); }
+        .up-count { font-size: 32px; font-weight: 800; line-height: 1; }
+        .up-label { font-size: 12px; font-weight: 600; }
 
         /* DASHBOARD GRID */
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px 20px; }
@@ -35,17 +59,6 @@
         .icon-sales { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .icon-report { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
         .dash-label { font-weight: 700; color: #333; font-size: 12px; text-align: center; }
-
-        /* TOP STATS */
-        .top-stats-container { padding: 15px 20px; display: flex; gap: 15px; justify-content: center; }
-        .today-circle { width: 100px; height: 100px; background: linear-gradient(135deg, #ff416c, #ff4b2b); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 8px 15px rgba(255, 75, 43, 0.4); border: 3px solid white; transition: transform 0.2s; }
-        .today-circle:active { transform: scale(0.95); }
-        .circle-count { font-size: 32px; font-weight: 800; line-height: 1; }
-        .circle-label { font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .upcoming-card { flex: 1; height: 100px; background: linear-gradient(135deg, #56CCF2, #2F80ED); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 8px 15px rgba(47, 128, 237, 0.3); border: 3px solid white; transition: transform 0.2s; }
-        .upcoming-card:active { transform: scale(0.95); }
-        .up-count { font-size: 32px; font-weight: 800; line-height: 1; }
-        .up-label { font-size: 12px; font-weight: 600; }
 
         /* SECTIONS & TABS */
         .page-section { display: none; padding: 15px; animation: fadeIn 0.3s; }
@@ -72,13 +85,12 @@
         .status-Done { border-left-color: #198754; background-color: #f0fdf4; opacity: 0.6; }
         .prospect-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
         .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
-        .task-list-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+        
+        /* MODAL LIST & ACTIONS */
+        .task-list-item { border-bottom: 1px solid #eee; padding: 15px 0; }
         .task-list-item:last-child { border-bottom: none; }
-
-        /* REPORTS SPECIFIC */
-        .stat-card { color: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; }
-        .bg-total { background: linear-gradient(45deg, #4b6cb7, #182848); }
-        .bg-sales { background: linear-gradient(45deg, #11998e, #38ef7d); }
+        .task-actions { margin-top: 8px; display: flex; gap: 10px; }
+        .reschedule-box { margin-top: 10px; background: #f9f9f9; padding: 10px; border-radius: 8px; display: none; }
     </style>
 </head>
 <body>
@@ -233,7 +245,6 @@
         <li class="nav-item"><button class="nav-link" onclick="showReportTab('segment')">📑 Segment</button></li>
         <li class="nav-item"><button class="nav-link" onclick="showReportTab('meetings')">🗓️ Meetings</button></li>
     </ul>
-    
     <div id="tab-consolidated">
         <div class="row g-2 mb-3">
             <div class="col-6"><div class="stat-card bg-total"><div class="stat-num" id="repTotalMem">0</div><div class="stat-label">Members</div></div></div>
@@ -248,13 +259,9 @@
         <div class="custom-card">
             <h6 class="text-primary fw-bold mb-3">Master Summary</h6>
             <div class="table-responsive"><table class="table table-sm table-bordered" id="fullTableConsolidated"><thead class="table-light"><tr><th>Name</th><th>Project</th><th>Village</th><th>Sales</th></tr></thead><tbody id="tblConsolidated"></tbody></table></div>
-            <div class="d-flex justify-content-center gap-2 mt-3">
-                <button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button>
-                <button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button>
-            </div>
+            <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button></div>
         </div>
     </div>
-
     <div id="tab-segment" style="display:none;">
         <select id="reportSegmentSelect" class="form-select mb-3" onchange="renderSegmentReport()"><option value="health">आरोग्य अभियान</option><option value="anemia">ॲनिमिया मुक्त</option><option value="water">जलसंचय</option><option value="network">नेटवर्क</option></select>
         <div class="custom-card">
@@ -262,7 +269,6 @@
             <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('segment')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('segment')">PDF</button></div>
         </div>
     </div>
-
     <div id="tab-meetings" style="display:none;">
         <div class="custom-card">
             <div class="table-responsive"><table class="table table-sm table-bordered" id="fullTableMeetings"><thead><tr><th>Date</th><th>Title</th><th>Status</th><th>Remark</th></tr></thead><tbody id="tblMeetings"></tbody></table></div>
@@ -353,22 +359,24 @@
     }
     function updateStatus(msg, type) { const b = document.getElementById('statusBadge'); b.innerText = msg; b.className = `badge bg-${type} text-${type==='warning'?'dark':'white'} border px-2 py-1`; }
 
-    // --- TASK CALCULATION ---
+    // --- TASK LOGIC (UPDATED) ---
     function calculateTasks() {
         const today = new Date().toISOString().split('T')[0];
         globalTodayList = []; globalUpcomingList = [];
 
+        // MEETINGS
         db.meetings.forEach(m => {
             if(m.status === 'Done') return;
-            let item = { type: 'MEET', title: m.title, sub: m.remark || '', date: m.date, time: m.time, mobile: '' };
+            let item = { id: m.id, type: 'MEET', title: m.title, sub: m.remark || '', date: m.date, time: m.time, mobile: '' };
             if(m.date === today) globalTodayList.push(item);
             else if(m.date > today) globalUpcomingList.push(item);
         });
 
+        // FOLLOWUPS
         for(let k in db.projects) {
-            db.projects[k].followups.forEach(f => {
+            db.projects[k].followups.forEach((f, idx) => {
                 f.dates.forEach(d => {
-                    let item = { type: 'CALL', title: f.personName, sub: f.remark, date: d, time: '', mobile: f.mobile };
+                    let item = { id: idx, pKey: k, type: 'CALL', title: f.personName, sub: f.remark, date: d, time: '', mobile: f.mobile };
                     if(d === today) globalTodayList.push(item);
                     else if(d > today) globalUpcomingList.push(item);
                 });
@@ -389,10 +397,31 @@
 
         let html = '<ul class="list-group">';
         list.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(t => {
-            html += `<li class="task-list-item d-flex justify-content-between align-items-center">
-                <div><span class="badge ${t.type==='MEET'?'bg-primary':'bg-warning text-dark'}">${t.type==='MEET'?'MEETING':'CALL'}</span> <strong> ${t.title}</strong>
-                <br><small class="text-muted">${t.date} | ${t.sub}</small></div>
-                ${t.mobile ? `<a href="tel:${t.mobile}" class="btn btn-sm btn-success rounded-circle"><i class="fas fa-phone"></i></a>` : ''}
+            // Unique ID for reschedule box
+            const uid = t.type + '-' + t.id + (t.type==='CALL' ? '-'+t.pKey : ''); 
+            
+            html += `
+            <li class="task-list-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge ${t.type==='MEET'?'bg-primary':'bg-warning text-dark'}">${t.type==='MEET'?'MEETING':'CALL'}</span> 
+                        <strong> ${t.title}</strong><br>
+                        <small class="text-muted">${t.date} | ${t.sub}</small>
+                    </div>
+                    ${t.mobile ? `<a href="tel:${t.mobile}" class="btn btn-sm btn-outline-success rounded-circle"><i class="fas fa-phone"></i></a>` : ''}
+                </div>
+                
+                <div class="task-actions">
+                    <button class="btn btn-sm btn-success flex-fill" onclick="markTaskDone('${t.type}', '${t.id}', '${t.pKey||''}', '${t.date}')"><i class="fas fa-check"></i> Done</button>
+                    <button class="btn btn-sm btn-primary flex-fill" onclick="document.getElementById('resch-${uid}').style.display='block'"><i class="fas fa-calendar-alt"></i> Next</button>
+                </div>
+
+                <div id="resch-${uid}" class="reschedule-box">
+                    <div class="input-group input-group-sm">
+                        <input type="date" id="date-${uid}" class="form-control">
+                        <button class="btn btn-primary" onclick="rescheduleTask('${t.type}', '${t.id}', '${t.pKey||''}', '${t.date}', 'date-${uid}')">Save</button>
+                    </div>
+                </div>
             </li>`;
         });
         html += '</ul>';
@@ -400,7 +429,39 @@
         new bootstrap.Modal(document.getElementById('taskPopup')).show();
     }
 
-    // --- NAVIGATION ---
+    // --- ACTIONS: DONE & RESCHEDULE ---
+    window.markTaskDone = function(type, id, pKey, date) {
+        if(type === 'MEET') {
+            const m = db.meetings.find(x => String(x.id) === String(id));
+            if(m) m.status = 'Done';
+        } else {
+            // Remove specific date from followup
+            const f = db.projects[pKey].followups[id];
+            if(f) f.dates = f.dates.filter(d => d !== date);
+        }
+        saveToFirebase();
+        bootstrap.Modal.getInstance(document.getElementById('taskPopup')).hide();
+    }
+
+    window.rescheduleTask = function(type, id, pKey, oldDate, inputId) {
+        const newDate = document.getElementById(inputId).value;
+        if(!newDate) return alert("Select Date");
+
+        if(type === 'MEET') {
+            const m = db.meetings.find(x => String(x.id) === String(id));
+            if(m) { m.date = newDate; m.status = 'Postponed'; }
+        } else {
+            const f = db.projects[pKey].followups[id];
+            if(f) {
+                f.dates = f.dates.filter(d => d !== oldDate); // Remove old
+                f.dates.push(newDate); // Add new
+            }
+        }
+        saveToFirebase();
+        bootstrap.Modal.getInstance(document.getElementById('taskPopup')).hide();
+    }
+
+    // --- NAVIGATION & VIEWS ---
     window.openSection = function(sec) {
         currentView = sec;
         document.getElementById('homeSection').style.display = 'none';
@@ -439,7 +500,7 @@
             proj.people.map((p,i)=>({...p, oIdx:i})).reverse().forEach(p => {
                 if(p.name.toLowerCase().includes(searchVal) || String(p.mobile).includes(searchVal)) {
                     container.innerHTML += `
-                    <div class="prospect-card" style="background:white;padding:15px;border-radius:15px;margin-bottom:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);border-left:5px solid var(--primary);">
+                    <div class="prospect-card">
                         <div style="display:flex;align-items:center;margin-bottom:10px;">
                             <div style="width:45px;height:45px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#555;margin-right:15px;">${p.name.charAt(0)}</div>
                             <div><h6 style="margin:0;font-weight:bold;">${p.name}</h6><small>${p.village} | ${p.mobile}</small></div>
@@ -497,19 +558,12 @@
     window.deleteMeetingDirect = function(id) { if(confirm("Del?")){db.meetings=db.meetings.filter(m=>m.id!=id); saveToFirebase();} }
     function deleteMeeting() { deleteMeetingDirect(document.getElementById('meetId').value); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
 
-    // --- REPORTS (Export Fix) ---
+    // --- REPORTS ---
     function renderAllReports() { let tm=0, ts=0, tc=0; let mr=''; for(let k in db.projects){ tm+=db.projects[k].people.length; ts+=db.projects[k].sales.length; tc+=db.projects[k].followups.length; db.projects[k].people.forEach(p=>{ let s=db.projects[k].sales.filter(x=>x.personName===p.name).length; mr+=`<tr><td>${p.name}</td><td>${db.projects[k].title}</td><td>${p.village}</td><td>${s}</td></tr>`; }); } document.getElementById('repTotalMem').innerText=tm; document.getElementById('repTotalSale').innerText=ts; document.getElementById('tblConsolidated').innerHTML=mr; renderSegmentReport(); let mRow=''; db.meetings.forEach(m=>{ mRow+=`<tr><td>${m.date}</td><td>${m.title}</td><td>${m.status}</td><td>${m.remark}</td></tr>`; }); document.getElementById('tblMeetings').innerHTML=mRow; }
     window.showReportTab=function(t){ ['consolidated','segment','meetings'].forEach(x=>document.getElementById('tab-'+x).style.display='none'); document.getElementById('tab-'+t).style.display='block'; renderAllReports(); }
     window.renderSegmentReport=function(){ const k=document.getElementById('reportSegmentSelect').value; const p=db.projects[k]; document.getElementById('segTotalMem').innerText=p.people.length; document.getElementById('segTotalSale').innerText=p.sales.length; let r=''; p.people.forEach(x=> r+=`<tr><td>${x.name}</td><td>${x.mobile}</td><td>${x.village}</td><td>${x.proposer}</td></tr>`); document.getElementById('tblSegment').innerHTML=r; }
-    window.downloadExcel=function(t){ 
-        const idMap = {'consolidated':'fullTableConsolidated', 'segment':'fullTableSegment', 'meetings':'fullTableMeetings'};
-        const wb=XLSX.utils.table_to_book(document.getElementById(idMap[t]),{sheet:"Data"}); 
-        XLSX.writeFile(wb, t+"_Report.xlsx"); 
-    }
-    window.downloadPDF=function(t){ 
-        const idMap = {'consolidated':'tab-consolidated', 'segment':'tab-segment', 'meetings':'tab-meetings'};
-        html2pdf().from(document.getElementById(idMap[t])).save(); 
-    }
+    window.downloadExcel=function(t){ const tbl=(t==='meetings')?'fullTableMeetings':(t==='segment'?'fullTableSegment':'fullTableConsolidated'); const wb=XLSX.utils.table_to_book(document.getElementById(tbl),{sheet:"Data"}); XLSX.writeFile(wb, t+"_Report.xlsx"); }
+    window.downloadPDF=function(t){ let id=(t==='meetings')?'tab-meetings':(t==='segment'?'tab-segment':'tab-consolidated'); html2pdf().from(document.getElementById(id)).save(); }
     
     function updateDailyStats() { const today=new Date().toISOString().split('T')[0]; let s=0; for(let k in db.projects) s+=db.projects[k].sales.filter(x=>x.date===today).length; if(s>0) document.getElementById('statusBadge').innerText += ` | Today Sales: ${s}`; }
     window.pickContact = async function() { try{const c = await navigator.contacts.select(['name','tel'],{multiple:false}); if(c.length){document.getElementById('pName').value=c[0].name[0]; document.getElementById('pMobile').value=c[0].tel[0];}}catch(e){} }
