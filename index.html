@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>क्रांतिकारी वर्ष 2026 (Smart Reminders)</title>
+    <title>क्रांतिकारी वर्ष 2026 (Report Fixed)</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -20,6 +20,7 @@
         body { font-family: 'Poppins', sans-serif; background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%); min-height: 100vh; padding-bottom: 70px; }
         
         #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        
         .app-header { background: white; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 0 0 20px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .header-title { font-weight: 800; color: var(--primary); text-transform: uppercase; font-size: 1.1rem; }
 
@@ -28,7 +29,6 @@
         .dash-card { background: white; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); height: 110px; transition: transform 0.2s; border: 2px solid white; cursor: pointer; }
         .dash-card:active { transform: scale(0.95); background: #f0f0f0; }
         .dash-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        
         .icon-planner { background: linear-gradient(135deg, #667eea, #764ba2); }
         .icon-list { background: linear-gradient(135deg, #FF9966, #FF5E62); }
         .icon-follow { background: linear-gradient(135deg, #56CCF2, #2F80ED); }
@@ -36,19 +36,16 @@
         .icon-report { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
         .dash-label { font-weight: 700; color: #333; font-size: 12px; text-align: center; }
 
-        /* REMINDER CARDS (NEW) */
-        .reminder-section { padding: 0 20px; margin-top: 10px; }
-        .reminder-group-title { font-size: 14px; font-weight: 800; color: #555; margin: 15px 0 5px 0; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .reminder-card { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 5px solid #ccc; position: relative; }
-        .rem-today { border-left-color: #FF5252; background: #fff5f5; } /* Red for Today */
-        .rem-tomorrow { border-left-color: #2196F3; background: #e3f2fd; } /* Blue for Tomorrow */
-        .rem-future { border-left-color: #4CAF50; } /* Green for Future */
-        
-        .rem-time { font-size: 11px; font-weight: bold; color: #777; float: right; }
-        .rem-title { font-weight: 700; color: #333; font-size: 15px; margin-bottom: 2px; }
-        .rem-sub { font-size: 12px; color: #666; }
-        .rem-btn { position: absolute; right: 10px; bottom: 10px; background: #25D366; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+        /* TOP STATS */
+        .top-stats-container { padding: 15px 20px; display: flex; gap: 15px; justify-content: center; }
+        .today-circle { width: 100px; height: 100px; background: linear-gradient(135deg, #ff416c, #ff4b2b); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 8px 15px rgba(255, 75, 43, 0.4); border: 3px solid white; transition: transform 0.2s; }
+        .today-circle:active { transform: scale(0.95); }
+        .circle-count { font-size: 32px; font-weight: 800; line-height: 1; }
+        .circle-label { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .upcoming-card { flex: 1; height: 100px; background: linear-gradient(135deg, #56CCF2, #2F80ED); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 8px 15px rgba(47, 128, 237, 0.3); border: 3px solid white; transition: transform 0.2s; }
+        .upcoming-card:active { transform: scale(0.95); }
+        .up-count { font-size: 32px; font-weight: 800; line-height: 1; }
+        .up-label { font-size: 12px; font-weight: 600; }
 
         /* SECTIONS & TABS */
         .page-section { display: none; padding: 15px; animation: fadeIn 0.3s; }
@@ -60,19 +57,25 @@
         .form-control, .form-select { padding: 10px; border-radius: 8px; }
         .btn-action { width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; color: white; border: none; }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--primary); margin-right: 15px; }
-        
-        /* LISTS */
-        .list-item { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
-        .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
+        .list-item { background: white; border-radius: 12px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
         
         /* CALENDAR */
         .planner-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 14px; }
         .cal-day { padding: 8px 0; border-radius: 50%; cursor: pointer; }
+        .cal-day:hover { background-color: #f0f0f0; }
         .cal-today { background-color: var(--saffron); color: white; font-weight: bold; }
         .cal-event { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
-        
-        /* STATS */
+        .meeting-item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 5px solid #ccc; cursor: pointer; }
+        .status-Pending { border-left-color: #ffc107; background-color: #fffbeb; }
+        .status-Postponed { border-left-color: #dc3545; background-color: #fff5f5; }
+        .status-Done { border-left-color: #198754; background-color: #f0fdf4; opacity: 0.6; }
+        .prospect-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
+        .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
+        .task-list-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .task-list-item:last-child { border-bottom: none; }
+
+        /* REPORTS SPECIFIC */
         .stat-card { color: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; }
         .bg-total { background: linear-gradient(45deg, #4b6cb7, #182848); }
         .bg-sales { background: linear-gradient(45deg, #11998e, #38ef7d); }
@@ -82,7 +85,7 @@
 
 <div id="loadingOverlay">
     <div class="spinner-border text-primary" role="status"></div>
-    <b class="mt-3">Loading Mission...</b>
+    <b class="mt-3">Connecting...</b>
 </div>
 
 <header class="app-header">
@@ -98,36 +101,43 @@
 
 <div id="homeSection">
     <div class="container mt-3">
-        
-        <div class="custom-card p-3 text-center mb-2 bg-light border">
+        <div class="custom-card p-3 text-center mb-0 bg-light border">
             <h5 class="fw-bold text-primary mb-0" id="currentDateDisplay"></h5>
             <small class="text-muted">Welcome Back!</small>
         </div>
+    </div>
 
-        <div id="smartReminderSection" class="reminder-section">
-            </div>
+    <div class="top-stats-container">
+        <div class="today-circle" onclick="openTaskModal('today')">
+            <div class="circle-count" id="todayTaskCount">0</div>
+            <div class="circle-label">Today</div>
+        </div>
+        <div class="upcoming-card" onclick="openTaskModal('upcoming')">
+            <div class="up-count" id="upcomingTaskCount">0</div>
+            <div class="up-label">पुढील कामे<br>(Upcoming)</div>
+        </div>
+    </div>
 
-        <div class="dashboard-grid">
-            <div class="dash-card" onclick="openSection('planner')" style="grid-column: span 2;">
-                <div class="dash-icon icon-planner"><i class="fas fa-calendar-alt"></i></div>
-                <div class="dash-label">Planner & Meetings</div>
-            </div>
-            <div class="dash-card" onclick="openSection('list')">
-                <div class="dash-icon icon-list"><i class="fas fa-user-plus"></i></div>
-                <div class="dash-label">Prospect List</div>
-            </div>
-            <div class="dash-card" onclick="openSection('followup')">
-                <div class="dash-icon icon-follow"><i class="fas fa-phone-volume"></i></div>
-                <div class="dash-label">Follow Up</div>
-            </div>
-            <div class="dash-card" onclick="openSection('sales')">
-                <div class="dash-icon icon-sales"><i class="fas fa-hand-holding-usd"></i></div>
-                <div class="dash-label">Finance/Sales</div>
-            </div>
-            <div class="dash-card" onclick="openSection('reports')">
-                <div class="dash-icon icon-report"><i class="fas fa-file-download"></i></div>
-                <div class="dash-label">Reports</div>
-            </div>
+    <div class="dashboard-grid">
+        <div class="dash-card" onclick="openSection('planner')" style="grid-column: span 2;">
+            <div class="dash-icon icon-planner"><i class="fas fa-calendar-alt"></i></div>
+            <div class="dash-label">Planner & Meetings</div>
+        </div>
+        <div class="dash-card" onclick="openSection('list')">
+            <div class="dash-icon icon-list"><i class="fas fa-user-plus"></i></div>
+            <div class="dash-label">Prospect List</div>
+        </div>
+        <div class="dash-card" onclick="openSection('followup')">
+            <div class="dash-icon icon-follow"><i class="fas fa-phone-volume"></i></div>
+            <div class="dash-label">Follow Up</div>
+        </div>
+        <div class="dash-card" onclick="openSection('sales')">
+            <div class="dash-icon icon-sales"><i class="fas fa-hand-holding-usd"></i></div>
+            <div class="dash-label">Finance/Sales</div>
+        </div>
+        <div class="dash-card" onclick="openSection('reports')">
+            <div class="dash-icon icon-report"><i class="fas fa-file-download"></i></div>
+            <div class="dash-label">Reports</div>
         </div>
     </div>
 </div>
@@ -144,7 +154,7 @@
         </div>
         <div class="cal-grid" id="calendarGrid"></div>
         <hr>
-        <h6 class="fw-bold text-muted small">MEETINGS:</h6>
+        <h6 class="fw-bold text-muted small">UPCOMING MEETINGS:</h6>
         <div id="plannerMeetingList" class="mt-2"></div>
     </div>
 </div>
@@ -156,9 +166,7 @@
         <button class="project-tab-btn" onclick="switchProject('water')">जलसंचय</button>
         <button class="project-tab-btn" onclick="switchProject('network')">नेटवर्क</button>
     </div>
-    <div class="mb-3">
-        <input type="text" id="searchBox" class="form-control search-box" placeholder="🔍 Search Name or Mobile..." onkeyup="renderCurrentView()">
-    </div>
+    <div class="mb-3"><input type="text" id="searchBox" class="form-control search-box" placeholder="🔍 Search Name..." onkeyup="renderCurrentView()"></div>
     <div class="custom-card">
         <h6 class="fw-bold text-primary mb-3">नवीन मेंबर</h6>
         <div class="bg-light p-2 rounded mb-3 border">
@@ -172,7 +180,7 @@
         </div>
         <div class="row g-2 mb-3">
             <div class="col-6"><label class="form-label">व्यवसाय</label><input type="text" id="pProfession" class="form-control" placeholder="Job"></div>
-            <div class="col-6"><label class="form-label">प्रपोजर</label><input type="text" id="pProposer" class="form-control" placeholder="Ref"></div>
+            <div class="col-6"><label class="form-label">प्रपोजर</label><input type="text" id="pProposer" class="form-control" placeholder="Ref By"></div>
         </div>
         <button id="saveBtn" class="btn-action" style="background:var(--primary)" onclick="addPerson()">SAVE DATA</button>
     </div>
@@ -189,7 +197,7 @@
     </div>
     <div class="custom-card">
         <h6 class="fw-bold text-warning mb-3">फॉलो-अप सेट करा</h6>
-        <label class="form-label">व्यक्ती:</label><select id="followupPersonSelect" class="form-select mb-3"></select>
+        <label class="form-label">व्यक्ती निवडा:</label><select id="followupPersonSelect" class="form-select mb-3"></select>
         <label class="form-label">चर्चा:</label><input type="text" id="fRemark" class="form-control mb-3" placeholder="Remark">
         <label class="form-label">पुढील ३ तारखा:</label>
         <div class="d-flex gap-2 mb-3"><input type="date" id="fDate1" class="form-control"><input type="date" id="fDate2" class="form-control"><input type="date" id="fDate3" class="form-control"></div>
@@ -233,14 +241,17 @@
         </div>
         <div class="custom-card text-center py-3 mb-3 border-warning">
             <h6 class="mb-2 text-warning"><i class="fas fa-shield-alt"></i> Data Backup</h6>
-            <button class="btn btn-sm btn-dark me-2" onclick="backupAllData()">Download Backup</button>
+            <button class="btn btn-sm btn-dark me-2" onclick="backupAllData()">Download</button>
             <button class="btn btn-sm btn-outline-dark" onclick="document.getElementById('restoreFile').click()">Restore</button>
             <input type="file" id="restoreFile" style="display:none" onchange="restoreBackup(this.files[0])">
         </div>
         <div class="custom-card">
             <h6 class="text-primary fw-bold mb-3">Master Summary</h6>
             <div class="table-responsive"><table class="table table-sm table-bordered" id="fullTableConsolidated"><thead class="table-light"><tr><th>Name</th><th>Project</th><th>Village</th><th>Sales</th></tr></thead><tbody id="tblConsolidated"></tbody></table></div>
-            <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button></div>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button>
+                <button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button>
+            </div>
         </div>
     </div>
 
@@ -288,12 +299,12 @@
   </div>
 </div>
 
-<div class="modal fade" id="todayPopup" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="taskPopup" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-danger text-white"><h5 class="modal-title">🔔 आजची महत्त्वाची कामे</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body" id="todayPopupBody"></div>
-      <div class="modal-footer justify-content-center"><button class="btn btn-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal">OK</button></div>
+      <div class="modal-header" id="taskPopupHeader"><h5 class="modal-title text-white">Tasks</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" id="taskPopupBody" class="modal-list-group"></div>
+      <div class="modal-footer justify-content-center"><button class="btn btn-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal">Close</button></div>
     </div>
   </div>
 </div>
@@ -308,10 +319,12 @@
     let db = { meetings: [], currentProject: 'health', projects: { 'health': { title: 'आरोग्य अभियान', people: [], followups: [], sales: [] }, 'anemia': { title: 'ॲनिमिया मुक्त', people: [], followups: [], sales: [] }, 'water': { title: 'जलसंचय', people: [], followups: [], sales: [] }, 'network': { title: 'नेटवर्क', people: [], followups: [], sales: [] } } };
     let editIndex = null;
     let currentView = 'home';
+    let globalTodayList = [];
+    let globalUpcomingList = [];
 
     window.onload = function() {
-        document.getElementById('currentDateDisplay').innerText = new Date().toDateString();
         document.getElementById('saleDate').valueAsDate = new Date();
+        document.getElementById('currentDateDisplay').innerText = new Date().toDateString();
         loadFromFirebase();
     };
 
@@ -321,7 +334,9 @@
             updateStatus("Online", "success");
         }).catch(() => { updateStatus("Offline", "danger"); }).finally(() => {
             document.getElementById('loadingOverlay').style.display = 'none';
-            renderSmartReminders(); renderCalendar(); renderMeetingsList(); checkTodayPopup(); updateDailyStats();
+            calculateTasks(); renderCalendar(); renderMeetingsList();
+            if(globalTodayList.length > 0) openTaskModal('today', true);
+            updateDailyStats();
         });
     }
 
@@ -329,7 +344,7 @@
         updateStatus("Saving...", "warning");
         dbRef.collection(COL_NAME).doc(DOC_ID).set(db).then(() => {
             updateStatus("Online", "success");
-            if(currentView==='home') renderSmartReminders();
+            if(currentView==='home') calculateTasks();
             else if(currentView === 'planner') { renderCalendar(); renderMeetingsList(); } 
             else if(currentView === 'reports') { renderAllReports(); } 
             else if(currentView !== 'home') renderCurrentView();
@@ -338,59 +353,51 @@
     }
     function updateStatus(msg, type) { const b = document.getElementById('statusBadge'); b.innerText = msg; b.className = `badge bg-${type} text-${type==='warning'?'dark':'white'} border px-2 py-1`; }
 
-    // --- SMART REMINDERS (HOME) ---
-    function renderSmartReminders() {
-        const div = document.getElementById('smartReminderSection');
+    // --- TASK CALCULATION ---
+    function calculateTasks() {
         const today = new Date().toISOString().split('T')[0];
-        const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-        
-        let listToday = [], listTom = [], listFut = [];
+        globalTodayList = []; globalUpcomingList = [];
 
-        // 1. Check Meetings
         db.meetings.forEach(m => {
             if(m.status === 'Done') return;
             let item = { type: 'MEET', title: m.title, sub: m.remark || '', date: m.date, time: m.time, mobile: '' };
-            if(m.date === today) listToday.push(item);
-            else if(m.date === tomorrow) listTom.push(item);
-            else if(m.date > tomorrow) listFut.push(item);
+            if(m.date === today) globalTodayList.push(item);
+            else if(m.date > today) globalUpcomingList.push(item);
         });
 
-        // 2. Check Followups
         for(let k in db.projects) {
             db.projects[k].followups.forEach(f => {
                 f.dates.forEach(d => {
                     let item = { type: 'CALL', title: f.personName, sub: f.remark, date: d, time: '', mobile: f.mobile };
-                    if(d === today) listToday.push(item);
-                    else if(d === tomorrow) listTom.push(item);
-                    else if(d > tomorrow) listFut.push(item);
+                    if(d === today) globalTodayList.push(item);
+                    else if(d > today) globalUpcomingList.push(item);
                 });
             });
         }
 
-        // Render Function
-        const renderCard = (item, cls) => `
-            <div class="reminder-card ${cls}">
-                <span class="rem-time">${item.date} ${item.time}</span>
-                <div class="rem-title">${item.type === 'MEET' ? '🗓️' : '📞'} ${item.title}</div>
-                <div class="rem-sub">${item.sub}</div>
-                ${item.mobile ? `<a href="tel:${item.mobile}" class="rem-btn"><i class="fas fa-phone"></i></a>` : ''}
-            </div>`;
+        document.getElementById('todayTaskCount').innerText = globalTodayList.length;
+        document.getElementById('upcomingTaskCount').innerText = globalUpcomingList.length;
+    }
 
-        let html = '';
-        if(listToday.length > 0) {
-            html += `<div class="reminder-group-title text-danger">🔴 आजची कामे (Today)</div>`;
-            listToday.forEach(i => html += renderCard(i, 'rem-today'));
-        }
-        if(listTom.length > 0) {
-            html += `<div class="reminder-group-title text-primary">🔵 उद्याची कामे (Tomorrow)</div>`;
-            listTom.forEach(i => html += renderCard(i, 'rem-tomorrow'));
-        }
-        if(listFut.length > 0) {
-            html += `<div class="reminder-group-title text-success">🟢 पुढील कामे (Upcoming)</div>`;
-            listFut.slice(0, 3).forEach(i => html += renderCard(i, 'rem-future')); // Show only next 3
-        }
+    function openTaskModal(type, auto) {
+        const list = type === 'today' ? globalTodayList : globalUpcomingList;
+        const header = document.getElementById('taskPopupHeader');
+        header.className = type === 'today' ? 'modal-header bg-danger' : 'modal-header bg-primary';
+        header.innerHTML = `<h5 class="modal-title text-white">${type==='today'?'🔔 आजची कामे (Today)':'📅 पुढील कामे (Upcoming)'}</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>`;
+        
+        if(list.length === 0) { if(!auto) alert("सध्या कोणतेही काम पेंडिंग नाही! 🎉"); return; }
 
-        div.innerHTML = html || '<div class="text-center text-muted small mt-2">सध्या कोणतेही काम पेंडिंग नाही! 🎉</div>';
+        let html = '<ul class="list-group">';
+        list.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(t => {
+            html += `<li class="task-list-item d-flex justify-content-between align-items-center">
+                <div><span class="badge ${t.type==='MEET'?'bg-primary':'bg-warning text-dark'}">${t.type==='MEET'?'MEETING':'CALL'}</span> <strong> ${t.title}</strong>
+                <br><small class="text-muted">${t.date} | ${t.sub}</small></div>
+                ${t.mobile ? `<a href="tel:${t.mobile}" class="btn btn-sm btn-success rounded-circle"><i class="fas fa-phone"></i></a>` : ''}
+            </li>`;
+        });
+        html += '</ul>';
+        document.getElementById('taskPopupBody').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('taskPopup')).show();
     }
 
     // --- NAVIGATION ---
@@ -408,7 +415,7 @@
         ['listSection', 'followupSection', 'salesSection', 'reportsSection', 'plannerSection'].forEach(id => document.getElementById(id).style.display = 'none');
         document.getElementById('homeSection').style.display = 'block';
         document.getElementById('backBtn').style.display = 'none';
-        renderSmartReminders();
+        calculateTasks();
     }
     window.switchProject = function(key) {
         db.currentProject = key;
@@ -448,7 +455,6 @@
             });
             loadImportOptions();
         }
-        // ... (Followup/Sales same as previous) ...
         if(currentView === 'followup') {
             const sel = document.getElementById('followupPersonSelect'); sel.innerHTML='<option value="">Select</option>';
             proj.people.forEach((p,i)=> sel.innerHTML+=`<option value="${i}">${p.name}</option>`);
@@ -462,20 +468,13 @@
             proj.people.forEach((p,i)=> sel.innerHTML+=`<option value="${i}">${p.name}</option>`);
             const h = document.getElementById('salesList'); h.innerHTML='';
             proj.sales.slice().reverse().forEach(s => {
-                h.innerHTML+=`<div class="list-item" style="border-left-color:var(--green)">
-                    <div><h6>${s.personName}</h6><small>${s.product}</small></div>
-                    <div><small class="d-block text-end">${s.date}</small><button class="btn btn-sm btn-outline-dark py-0" onclick='generateInvoice(${JSON.stringify(s)})'>🧾</button></div>
-                </div>`;
+                h.innerHTML+=`<div class="list-item" style="border-left-color:var(--green)"><div><h6>${s.personName}</h6><small>${s.product}</small></div><div><small class="d-block text-end">${s.date}</small><button class="btn btn-sm btn-outline-dark py-0" onclick='generateInvoice(${JSON.stringify(s)})'>🧾</button></div></div>`;
             });
         }
     }
 
     // --- PRO FEATURES ---
-    function generateInvoice(sale) {
-        const html = `<div style="text-align:center; padding:10px;"><h3>INVOICE</h3><hr><p><b>Customer:</b> ${sale.personName}</p><p><b>Item:</b> ${sale.product}</p><p><b>Date:</b> ${sale.date}</p><hr><p>Thank you for business!</p></div>`;
-        document.getElementById('invoiceContent').innerHTML = html;
-        new bootstrap.Modal(document.getElementById('invoiceModal')).show();
-    }
+    function generateInvoice(sale) { document.getElementById('invoiceContent').innerHTML = `<div style="text-align:center; padding:10px;"><h3>INVOICE</h3><hr><p><b>Customer:</b> ${sale.personName}</p><p><b>Item:</b> ${sale.product}</p><p><b>Date:</b> ${sale.date}</p><hr><p>Thank you!</p></div>`; new bootstrap.Modal(document.getElementById('invoiceModal')).show(); }
     function printInvoice() { const c = document.getElementById('invoiceContent').innerHTML; const w = window.open(); w.document.write(c); w.print(); w.close(); }
     window.backupAllData = function() { const blob = new Blob([JSON.stringify(db)], {type: "application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Mission2026_Backup.json"; a.click(); }
     window.restoreBackup = function(file) { const reader = new FileReader(); reader.onload = e => { db = JSON.parse(e.target.result); saveToFirebase(); alert("Restored!"); location.reload(); }; reader.readAsText(file); }
@@ -498,21 +497,21 @@
     window.deleteMeetingDirect = function(id) { if(confirm("Del?")){db.meetings=db.meetings.filter(m=>m.id!=id); saveToFirebase();} }
     function deleteMeeting() { deleteMeetingDirect(document.getElementById('meetId').value); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
 
-    // --- REPORTS ---
-    function renderAllReports() { let tm=0, ts=0; let mr=''; for(let k in db.projects){ tm+=db.projects[k].people.length; ts+=db.projects[k].sales.length; db.projects[k].people.forEach(p=>{ let s=db.projects[k].sales.filter(x=>x.personName===p.name).length; mr+=`<tr><td>${p.name}</td><td>${db.projects[k].title}</td><td>${p.village}</td><td>${s}</td></tr>`; }); } document.getElementById('repTotalMem').innerText=tm; document.getElementById('repTotalSale').innerText=ts; document.getElementById('tblConsolidated').innerHTML=mr; renderSegmentReport(); let mRow=''; db.meetings.forEach(m=>{ mRow+=`<tr><td>${m.date}</td><td>${m.title}</td><td>${m.status}</td><td>${m.remark}</td></tr>`; }); document.getElementById('tblMeetings').innerHTML=mRow; }
+    // --- REPORTS (Export Fix) ---
+    function renderAllReports() { let tm=0, ts=0, tc=0; let mr=''; for(let k in db.projects){ tm+=db.projects[k].people.length; ts+=db.projects[k].sales.length; tc+=db.projects[k].followups.length; db.projects[k].people.forEach(p=>{ let s=db.projects[k].sales.filter(x=>x.personName===p.name).length; mr+=`<tr><td>${p.name}</td><td>${db.projects[k].title}</td><td>${p.village}</td><td>${s}</td></tr>`; }); } document.getElementById('repTotalMem').innerText=tm; document.getElementById('repTotalSale').innerText=ts; document.getElementById('tblConsolidated').innerHTML=mr; renderSegmentReport(); let mRow=''; db.meetings.forEach(m=>{ mRow+=`<tr><td>${m.date}</td><td>${m.title}</td><td>${m.status}</td><td>${m.remark}</td></tr>`; }); document.getElementById('tblMeetings').innerHTML=mRow; }
     window.showReportTab=function(t){ ['consolidated','segment','meetings'].forEach(x=>document.getElementById('tab-'+x).style.display='none'); document.getElementById('tab-'+t).style.display='block'; renderAllReports(); }
     window.renderSegmentReport=function(){ const k=document.getElementById('reportSegmentSelect').value; const p=db.projects[k]; document.getElementById('segTotalMem').innerText=p.people.length; document.getElementById('segTotalSale').innerText=p.sales.length; let r=''; p.people.forEach(x=> r+=`<tr><td>${x.name}</td><td>${x.mobile}</td><td>${x.village}</td><td>${x.proposer}</td></tr>`); document.getElementById('tblSegment').innerHTML=r; }
-    window.downloadExcel=function(t){ const tbl=(t==='meetings')?'fullTableMeetings':(t==='segment'?'fullTableSegment':'fullTableConsolidated'); const wb=XLSX.utils.table_to_book(document.getElementById(tbl),{sheet:"Data"}); XLSX.writeFile(wb, t+"_Report.xlsx"); }
-    window.downloadPDF=function(t){ let id=(t==='meetings')?'tab-meetings':(t==='segment'?'tab-segment':'tab-consolidated'); html2pdf().from(document.getElementById(id)).save(); }
-    
-    // Updates
-    function updateDailyStats() { const today=new Date().toISOString().split('T')[0]; let s=0; for(let k in db.projects) s+=db.projects[k].sales.filter(x=>x.date===today).length; if(s>0) document.getElementById('statusBadge').innerText += ` | Today Sales: ${s}`; }
-    function checkTodayPopup() { 
-        const t=new Date().toISOString().split('T')[0]; let l=[]; 
-        db.meetings.forEach(m=>{if(m.date===t && m.status!=='Done')l.push(`🗓️ ${m.title}`)});
-        for(let k in db.projects) db.projects[k].followups.forEach(f=>{f.dates.forEach(d=>{if(d===t)l.push(`📞 ${f.personName}`)})});
-        if(l.length){ document.getElementById('todayPopupBody').innerHTML='<ul class="list-group">'+l.map(x=>`<li class="list-group-item border-0"><i class="fas fa-bell text-warning me-2"></i> ${x}</li>`).join('')+'</ul>'; new bootstrap.Modal(document.getElementById('todayPopup')).show(); } 
+    window.downloadExcel=function(t){ 
+        const idMap = {'consolidated':'fullTableConsolidated', 'segment':'fullTableSegment', 'meetings':'fullTableMeetings'};
+        const wb=XLSX.utils.table_to_book(document.getElementById(idMap[t]),{sheet:"Data"}); 
+        XLSX.writeFile(wb, t+"_Report.xlsx"); 
     }
+    window.downloadPDF=function(t){ 
+        const idMap = {'consolidated':'tab-consolidated', 'segment':'tab-segment', 'meetings':'tab-meetings'};
+        html2pdf().from(document.getElementById(idMap[t])).save(); 
+    }
+    
+    function updateDailyStats() { const today=new Date().toISOString().split('T')[0]; let s=0; for(let k in db.projects) s+=db.projects[k].sales.filter(x=>x.date===today).length; if(s>0) document.getElementById('statusBadge').innerText += ` | Today Sales: ${s}`; }
     window.pickContact = async function() { try{const c = await navigator.contacts.select(['name','tel'],{multiple:false}); if(c.length){document.getElementById('pName').value=c[0].name[0]; document.getElementById('pMobile').value=c[0].tel[0];}}catch(e){} }
 </script>
 
