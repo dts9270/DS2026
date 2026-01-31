@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>क्रांतिकारी वर्ष 2026 (Action Mode)</title>
+    <title>क्रांतिकारी वर्ष 2026 (Final Fix)</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -70,7 +70,6 @@
         .form-control, .form-select { padding: 10px; border-radius: 8px; }
         .btn-action { width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; color: white; border: none; }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--primary); margin-right: 15px; }
-        .list-item { background: white; border-radius: 12px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
         
         /* CALENDAR */
         .planner-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
@@ -79,10 +78,8 @@
         .cal-day:hover { background-color: #f0f0f0; }
         .cal-today { background-color: var(--saffron); color: white; font-weight: bold; }
         .cal-event { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
-        .meeting-item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 5px solid #ccc; cursor: pointer; }
-        .status-Pending { border-left-color: #ffc107; background-color: #fffbeb; }
-        .status-Postponed { border-left-color: #dc3545; background-color: #fff5f5; }
-        .status-Done { border-left-color: #198754; background-color: #f0fdf4; opacity: 0.6; }
+        
+        /* PROSPECT LIST UI */
         .prospect-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
         .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
         
@@ -91,6 +88,9 @@
         .task-list-item:last-child { border-bottom: none; }
         .task-actions { margin-top: 8px; display: flex; gap: 10px; }
         .reschedule-box { margin-top: 10px; background: #f9f9f9; padding: 10px; border-radius: 8px; display: none; }
+        
+        /* TABLES */
+        .table-responsive { border-radius: 10px; overflow: hidden; font-size: 12px; background: white; }
     </style>
 </head>
 <body>
@@ -245,6 +245,7 @@
         <li class="nav-item"><button class="nav-link" onclick="showReportTab('segment')">📑 Segment</button></li>
         <li class="nav-item"><button class="nav-link" onclick="showReportTab('meetings')">🗓️ Meetings</button></li>
     </ul>
+    
     <div id="tab-consolidated">
         <div class="row g-2 mb-3">
             <div class="col-6"><div class="stat-card bg-total"><div class="stat-num" id="repTotalMem">0</div><div class="stat-label">Members</div></div></div>
@@ -262,6 +263,7 @@
             <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button></div>
         </div>
     </div>
+
     <div id="tab-segment" style="display:none;">
         <select id="reportSegmentSelect" class="form-select mb-3" onchange="renderSegmentReport()"><option value="health">आरोग्य अभियान</option><option value="anemia">ॲनिमिया मुक्त</option><option value="water">जलसंचय</option><option value="network">नेटवर्क</option></select>
         <div class="custom-card">
@@ -269,6 +271,7 @@
             <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('segment')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('segment')">PDF</button></div>
         </div>
     </div>
+
     <div id="tab-meetings" style="display:none;">
         <div class="custom-card">
             <div class="table-responsive"><table class="table table-sm table-bordered" id="fullTableMeetings"><thead><tr><th>Date</th><th>Title</th><th>Status</th><th>Remark</th></tr></thead><tbody id="tblMeetings"></tbody></table></div>
@@ -334,6 +337,14 @@
         loadFromFirebase();
     };
 
+    function getLocalTodayDate() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     function loadFromFirebase() {
         dbRef.collection(COL_NAME).doc(DOC_ID).get().then((doc) => {
             if (doc.exists) { db = doc.data(); if(!db.meetings) db.meetings=[]; } else { saveToFirebase(); }
@@ -359,12 +370,12 @@
     }
     function updateStatus(msg, type) { const b = document.getElementById('statusBadge'); b.innerText = msg; b.className = `badge bg-${type} text-${type==='warning'?'dark':'white'} border px-2 py-1`; }
 
-    // --- TASK LOGIC (UPDATED) ---
+    // --- TASK CALCULATION (CORRECTED DATE) ---
     function calculateTasks() {
-        const today = new Date().toISOString().split('T')[0];
+        const today = getLocalTodayDate();
         globalTodayList = []; globalUpcomingList = [];
 
-        // MEETINGS
+        // Meetings
         db.meetings.forEach(m => {
             if(m.status === 'Done') return;
             let item = { id: m.id, type: 'MEET', title: m.title, sub: m.remark || '', date: m.date, time: m.time, mobile: '' };
@@ -372,7 +383,7 @@
             else if(m.date > today) globalUpcomingList.push(item);
         });
 
-        // FOLLOWUPS
+        // Followups
         for(let k in db.projects) {
             db.projects[k].followups.forEach((f, idx) => {
                 f.dates.forEach(d => {
@@ -397,7 +408,6 @@
 
         let html = '<ul class="list-group">';
         list.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(t => {
-            // Unique ID for reschedule box
             const uid = t.type + '-' + t.id + (t.type==='CALL' ? '-'+t.pKey : ''); 
             
             html += `
@@ -435,7 +445,6 @@
             const m = db.meetings.find(x => String(x.id) === String(id));
             if(m) m.status = 'Done';
         } else {
-            // Remove specific date from followup
             const f = db.projects[pKey].followups[id];
             if(f) f.dates = f.dates.filter(d => d !== date);
         }
@@ -453,15 +462,15 @@
         } else {
             const f = db.projects[pKey].followups[id];
             if(f) {
-                f.dates = f.dates.filter(d => d !== oldDate); // Remove old
-                f.dates.push(newDate); // Add new
+                f.dates = f.dates.filter(d => d !== oldDate);
+                f.dates.push(newDate);
             }
         }
         saveToFirebase();
         bootstrap.Modal.getInstance(document.getElementById('taskPopup')).hide();
     }
 
-    // --- NAVIGATION & VIEWS ---
+    // --- NAVIGATION ---
     window.openSection = function(sec) {
         currentView = sec;
         document.getElementById('homeSection').style.display = 'none';
