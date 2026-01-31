@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>क्रांतिकारी वर्ष 2026 (Ultimate UI)</title>
+    <title>क्रांतिकारी वर्ष 2026 (Smart Reminders)</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,102 +20,69 @@
         body { font-family: 'Poppins', sans-serif; background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%); min-height: 100vh; padding-bottom: 70px; }
         
         #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        
-        /* HEADER */
         .app-header { background: white; padding: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 0 0 20px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .header-title { font-weight: 800; color: var(--primary); text-transform: uppercase; font-size: 1.1rem; }
 
-        /* DASHBOARD */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .dash-card { background: white; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); height: 130px; transition: transform 0.2s; border: 2px solid white; cursor: pointer; }
+        /* DASHBOARD GRID */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px 20px; }
+        .dash-card { background: white; border-radius: 16px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); height: 110px; transition: transform 0.2s; border: 2px solid white; cursor: pointer; }
         .dash-card:active { transform: scale(0.95); background: #f0f0f0; }
-        .dash-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 10px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .dash-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         
         .icon-planner { background: linear-gradient(135deg, #667eea, #764ba2); }
         .icon-list { background: linear-gradient(135deg, #FF9966, #FF5E62); }
         .icon-follow { background: linear-gradient(135deg, #56CCF2, #2F80ED); }
         .icon-sales { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .icon-report { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
-        .dash-label { font-weight: 700; color: #333; font-size: 13px; text-align: center; }
+        .dash-label { font-weight: 700; color: #333; font-size: 12px; text-align: center; }
 
-        /* SECTIONS */
+        /* REMINDER CARDS (NEW) */
+        .reminder-section { padding: 0 20px; margin-top: 10px; }
+        .reminder-group-title { font-size: 14px; font-weight: 800; color: #555; margin: 15px 0 5px 0; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .reminder-card { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 5px solid #ccc; position: relative; }
+        .rem-today { border-left-color: #FF5252; background: #fff5f5; } /* Red for Today */
+        .rem-tomorrow { border-left-color: #2196F3; background: #e3f2fd; } /* Blue for Tomorrow */
+        .rem-future { border-left-color: #4CAF50; } /* Green for Future */
+        
+        .rem-time { font-size: 11px; font-weight: bold; color: #777; float: right; }
+        .rem-title { font-weight: 700; color: #333; font-size: 15px; margin-bottom: 2px; }
+        .rem-sub { font-size: 12px; color: #666; }
+        .rem-btn { position: absolute; right: 10px; bottom: 10px; background: #25D366; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+
+        /* SECTIONS & TABS */
         .page-section { display: none; padding: 15px; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .custom-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 15px; }
-
-        /* TABS */
         .project-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
         .project-tab-btn { background: white; border: 1px solid #ddd; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 13px; white-space: nowrap; transition: 0.3s; }
         .project-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
-
-        /* CALENDAR & MEETINGS */
-        .planner-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 14px; }
-        .cal-day { padding: 8px 0; border-radius: 50%; cursor: pointer; }
-        .cal-day:hover { background-color: #f0f0f0; }
-        .cal-today { background-color: var(--saffron); color: white; font-weight: bold; }
-        .cal-event { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
-        .meeting-item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 5px solid #ccc; cursor: pointer; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .status-Pending { border-left-color: #ffc107; background-color: #fffbeb; }
-        .status-Postponed { border-left-color: #dc3545; background-color: #fff5f5; }
-        .status-Done { border-left-color: #198754; background-color: #f0fdf4; opacity: 0.6; }
-        .status-Done h6 { text-decoration: line-through; color: #666; }
-
-        /* --- NEW PROSPECT LIST UI --- */
-        .prospect-card {
-            background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s;
-            border: 1px solid #eee; position: relative; overflow: hidden;
-        }
-        .prospect-card:active { transform: scale(0.98); }
-        
-        .prospect-header { display: flex; align-items: center; margin-bottom: 12px; }
-        .avatar {
-            width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary), #4b6cb7);
-            color: white; font-size: 20px; font-weight: bold; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; margin-right: 15px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-        }
-        .info h6 { margin: 0; font-weight: 700; font-size: 16px; color: #333; }
-        .info small { color: #666; font-size: 12px; display: block; margin-top: 2px; }
-        
-        .ref-badge { 
-            background: #eef2ff; color: var(--primary); padding: 4px 10px; 
-            border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-top: 5px;
-        }
-
-        .action-row {
-            display: flex; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 12px;
-        }
-        .btn-act {
-            flex: 1; margin: 0 3px; border-radius: 8px; border: none; padding: 8px 0;
-            font-size: 18px; color: white; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s;
-        }
-        .btn-call { background: #4CAF50; }
-        .btn-wa { background: #25D366; }
-        .btn-edit { background: #FFC107; color: #333; }
-        .btn-del { background: #FF5252; }
-        /* -------------------------- */
-
-        .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
         .form-control, .form-select { padding: 10px; border-radius: 8px; }
         .btn-action { width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; color: white; border: none; }
         .back-btn { background: none; border: none; font-size: 22px; color: var(--primary); margin-right: 15px; }
         
+        /* LISTS */
+        .list-item { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
+        .search-box { border-radius: 30px; border: 2px solid var(--primary); padding: 10px 20px; }
+        
+        /* CALENDAR */
+        .planner-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 14px; }
+        .cal-day { padding: 8px 0; border-radius: 50%; cursor: pointer; }
+        .cal-today { background-color: var(--saffron); color: white; font-weight: bold; }
+        .cal-event { border: 2px solid var(--primary); font-weight: bold; color: var(--primary); }
+        
+        /* STATS */
         .stat-card { color: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 10px; }
         .bg-total { background: linear-gradient(45deg, #4b6cb7, #182848); }
         .bg-sales { background: linear-gradient(45deg, #11998e, #38ef7d); }
-        
-        /* LIST ITEM (OLD - For Followup/Sales) */
-        .list-item { background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <div id="loadingOverlay">
     <div class="spinner-border text-primary" role="status"></div>
-    <b class="mt-3">Connecting...</b>
+    <b class="mt-3">Loading Mission...</b>
 </div>
 
 <header class="app-header">
@@ -131,10 +98,14 @@
 
 <div id="homeSection">
     <div class="container mt-3">
+        
         <div class="custom-card p-3 text-center mb-2 bg-light border">
             <h5 class="fw-bold text-primary mb-0" id="currentDateDisplay"></h5>
             <small class="text-muted">Welcome Back!</small>
         </div>
+
+        <div id="smartReminderSection" class="reminder-section">
+            </div>
 
         <div class="dashboard-grid">
             <div class="dash-card" onclick="openSection('planner')" style="grid-column: span 2;">
@@ -173,7 +144,7 @@
         </div>
         <div class="cal-grid" id="calendarGrid"></div>
         <hr>
-        <h6 class="fw-bold text-muted small">UPCOMING MEETINGS:</h6>
+        <h6 class="fw-bold text-muted small">MEETINGS:</h6>
         <div id="plannerMeetingList" class="mt-2"></div>
     </div>
 </div>
@@ -185,15 +156,13 @@
         <button class="project-tab-btn" onclick="switchProject('water')">जलसंचय</button>
         <button class="project-tab-btn" onclick="switchProject('network')">नेटवर्क</button>
     </div>
-    
     <div class="mb-3">
         <input type="text" id="searchBox" class="form-control search-box" placeholder="🔍 Search Name or Mobile..." onkeyup="renderCurrentView()">
     </div>
-
     <div class="custom-card">
-        <h6 class="fw-bold text-primary mb-3">नवीन मेंबर ॲड करा</h6>
+        <h6 class="fw-bold text-primary mb-3">नवीन मेंबर</h6>
         <div class="bg-light p-2 rounded mb-3 border">
-            <button class="btn btn-warning w-100 btn-sm fw-bold text-white mb-2" onclick="pickContact()"><i class="fas fa-address-book"></i> Import Contact</button>
+            <button class="btn btn-warning w-100 btn-sm fw-bold text-white mb-2" onclick="pickContact()"><i class="fas fa-address-book"></i> Import</button>
             <select id="importSelect" class="form-select form-select-sm" onchange="fillFromImport()"><option value="">-- Smart Import --</option></select>
         </div>
         <div class="mb-2"><label class="form-label">नाव</label><input type="text" id="pName" class="form-control" placeholder="Name"></div>
@@ -202,8 +171,8 @@
             <div class="col-6"><label class="form-label">गाव</label><input type="text" id="pVillage" class="form-control" placeholder="Village"></div>
         </div>
         <div class="row g-2 mb-3">
-            <div class="col-6"><label class="form-label">व्यवसाय</label><input type="text" id="pProfession" class="form-control" placeholder="Job/Business"></div>
-            <div class="col-6"><label class="form-label">प्रपोजर</label><input type="text" id="pProposer" class="form-control" placeholder="Ref By"></div>
+            <div class="col-6"><label class="form-label">व्यवसाय</label><input type="text" id="pProfession" class="form-control" placeholder="Job"></div>
+            <div class="col-6"><label class="form-label">प्रपोजर</label><input type="text" id="pProposer" class="form-control" placeholder="Ref"></div>
         </div>
         <button id="saveBtn" class="btn-action" style="background:var(--primary)" onclick="addPerson()">SAVE DATA</button>
     </div>
@@ -220,14 +189,10 @@
     </div>
     <div class="custom-card">
         <h6 class="fw-bold text-warning mb-3">फॉलो-अप सेट करा</h6>
-        <label class="form-label">व्यक्ती निवडा:</label><select id="followupPersonSelect" class="form-select mb-3"></select>
+        <label class="form-label">व्यक्ती:</label><select id="followupPersonSelect" class="form-select mb-3"></select>
         <label class="form-label">चर्चा:</label><input type="text" id="fRemark" class="form-control mb-3" placeholder="Remark">
         <label class="form-label">पुढील ३ तारखा:</label>
-        <div class="d-flex gap-2 mb-3">
-            <input type="date" id="fDate1" class="form-control">
-            <input type="date" id="fDate2" class="form-control">
-            <input type="date" id="fDate3" class="form-control">
-        </div>
+        <div class="d-flex gap-2 mb-3"><input type="date" id="fDate1" class="form-control"><input type="date" id="fDate2" class="form-control"><input type="date" id="fDate3" class="form-control"></div>
         <button class="btn-action" style="background:var(--saffron)" onclick="addFollowup()">SAVE REMINDER</button>
     </div>
     <div id="followupHistoryList"></div>
@@ -260,68 +225,37 @@
         <li class="nav-item"><button class="nav-link" onclick="showReportTab('segment')">📑 Segment</button></li>
         <li class="nav-item"><button class="nav-link" onclick="showReportTab('meetings')">🗓️ Meetings</button></li>
     </ul>
-
+    
     <div id="tab-consolidated">
         <div class="row g-2 mb-3">
-            <div class="col-6"><div class="stat-card bg-total"><div class="stat-num" id="repTotalMem">0</div><div class="stat-label">Total Members</div></div></div>
-            <div class="col-6"><div class="stat-card bg-sales"><div class="stat-num" id="repTotalSale">0</div><div class="stat-label">Total Sales</div></div></div>
+            <div class="col-6"><div class="stat-card bg-total"><div class="stat-num" id="repTotalMem">0</div><div class="stat-label">Members</div></div></div>
+            <div class="col-6"><div class="stat-card bg-sales"><div class="stat-num" id="repTotalSale">0</div><div class="stat-label">Sales</div></div></div>
         </div>
-        
         <div class="custom-card text-center py-3 mb-3 border-warning">
             <h6 class="mb-2 text-warning"><i class="fas fa-shield-alt"></i> Data Backup</h6>
             <button class="btn btn-sm btn-dark me-2" onclick="backupAllData()">Download Backup</button>
-            <button class="btn btn-sm btn-outline-dark" onclick="document.getElementById('restoreFile').click()">Restore File</button>
+            <button class="btn btn-sm btn-outline-dark" onclick="document.getElementById('restoreFile').click()">Restore</button>
             <input type="file" id="restoreFile" style="display:none" onchange="restoreBackup(this.files[0])">
         </div>
-
         <div class="custom-card">
             <h6 class="text-primary fw-bold mb-3">Master Summary</h6>
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered table-hover" id="fullTableConsolidated">
-                    <thead class="table-light"><tr><th>Name</th><th>Project</th><th>Village</th><th>Sales</th></tr></thead>
-                    <tbody id="tblConsolidated"></tbody>
-                </table>
-            </div>
-            <div class="d-flex justify-content-center gap-2 mt-3">
-                <button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button>
-                <button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button>
-            </div>
+            <div class="table-responsive"><table class="table table-sm table-bordered" id="fullTableConsolidated"><thead class="table-light"><tr><th>Name</th><th>Project</th><th>Village</th><th>Sales</th></tr></thead><tbody id="tblConsolidated"></tbody></table></div>
+            <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('consolidated')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('consolidated')">PDF</button></div>
         </div>
     </div>
 
     <div id="tab-segment" style="display:none;">
-        <select id="reportSegmentSelect" class="form-select mb-3" onchange="renderSegmentReport()">
-            <option value="health">आरोग्य अभियान</option>
-            <option value="anemia">ॲनिमिया मुक्त</option>
-            <option value="water">जलसंचय</option>
-            <option value="network">नेटवर्क</option>
-        </select>
+        <select id="reportSegmentSelect" class="form-select mb-3" onchange="renderSegmentReport()"><option value="health">आरोग्य अभियान</option><option value="anemia">ॲनिमिया मुक्त</option><option value="water">जलसंचय</option><option value="network">नेटवर्क</option></select>
         <div class="custom-card">
-            <div class="table-responsive">
-                <table class="table table-sm table-striped" id="fullTableSegment">
-                    <thead><tr><th>Name</th><th>Mobile</th><th>Village</th><th>Ref</th></tr></thead>
-                    <tbody id="tblSegment"></tbody>
-                </table>
-            </div>
-            <div class="d-flex justify-content-center gap-2 mt-3">
-                <button class="btn btn-sm btn-success" onclick="downloadExcel('segment')">Excel</button>
-                <button class="btn btn-sm btn-danger" onclick="downloadPDF('segment')">PDF</button>
-            </div>
+            <div class="table-responsive"><table class="table table-sm table-striped" id="fullTableSegment"><thead><tr><th>Name</th><th>Mobile</th><th>Village</th><th>Ref</th></tr></thead><tbody id="tblSegment"></tbody></table></div>
+            <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('segment')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('segment')">PDF</button></div>
         </div>
     </div>
 
     <div id="tab-meetings" style="display:none;">
         <div class="custom-card">
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered" id="fullTableMeetings">
-                    <thead><tr><th>Date</th><th>Title</th><th>Status</th><th>Remark</th></tr></thead>
-                    <tbody id="tblMeetings"></tbody>
-                </table>
-            </div>
-            <div class="d-flex justify-content-center gap-2 mt-3">
-                <button class="btn btn-sm btn-success" onclick="downloadExcel('meetings')">Excel</button>
-                <button class="btn btn-sm btn-danger" onclick="downloadPDF('meetings')">PDF</button>
-            </div>
+            <div class="table-responsive"><table class="table table-sm table-bordered" id="fullTableMeetings"><thead><tr><th>Date</th><th>Title</th><th>Status</th><th>Remark</th></tr></thead><tbody id="tblMeetings"></tbody></table></div>
+            <div class="d-flex justify-content-center gap-2 mt-3"><button class="btn btn-sm btn-success" onclick="downloadExcel('meetings')">Excel</button><button class="btn btn-sm btn-danger" onclick="downloadPDF('meetings')">PDF</button></div>
         </div>
     </div>
 </div>
@@ -329,18 +263,14 @@
 <div class="modal fade" id="meetingModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">🗓️ Meeting Details</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
+      <div class="modal-header bg-primary text-white"><h5 class="modal-title">🗓️ Meeting Details</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
       <div class="modal-body">
         <input type="hidden" id="meetId">
-        <label class="form-label">Title:</label><input type="text" id="meetTitle" class="form-control mb-2">
-        <label class="form-label">Date:</label><input type="date" id="meetDate" class="form-control mb-2">
-        <label class="form-label">Time:</label><input type="time" id="meetTime" class="form-control mb-2">
-        <label class="form-label">Status:</label>
-        <select id="meetStatus" class="form-select mb-2"><option value="Pending">Pending</option><option value="Done">Done</option><option value="Postponed">Postponed</option></select>
-        <label class="form-label">Remark:</label><textarea id="meetRemark" class="form-control mb-2"></textarea>
+        <label>Title:</label><input type="text" id="meetTitle" class="form-control mb-2">
+        <label>Date:</label><input type="date" id="meetDate" class="form-control mb-2">
+        <label>Time:</label><input type="time" id="meetTime" class="form-control mb-2">
+        <label>Status:</label><select id="meetStatus" class="form-select mb-2"><option value="Pending">Pending</option><option value="Done">Done</option><option value="Postponed">Postponed</option></select>
+        <label>Remark:</label><textarea id="meetRemark" class="form-control mb-2"></textarea>
         <button class="btn btn-primary w-100" onclick="saveMeeting()">Save</button>
         <button class="btn btn-danger w-100 mt-2" onclick="deleteMeeting()">Delete</button>
       </div>
@@ -361,7 +291,7 @@
 <div class="modal fade" id="todayPopup" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-danger text-white"><h5 class="modal-title">🔔 Today's Tasks</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-header bg-danger text-white"><h5 class="modal-title">🔔 आजची महत्त्वाची कामे</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
       <div class="modal-body" id="todayPopupBody"></div>
       <div class="modal-footer justify-content-center"><button class="btn btn-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal">OK</button></div>
     </div>
@@ -370,13 +300,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // --- CONFIG ---
     const firebaseConfig = { apiKey: "AIzaSyCny9svhGUs3Ja5OrTHfH5Kqj05GW2S0RE", authDomain: "dsworldcrm.firebaseapp.com", projectId: "dsworldcrm", storageBucket: "dsworldcrm.firebasestorage.app", messagingSenderId: "449729131508", appId: "1:449729131508:web:61cdd1de17b151717c3fa1" };
     firebase.initializeApp(firebaseConfig);
     const dbRef = firebase.firestore();
     const DOC_ID = "mainData"; const COL_NAME = "crm_data"; 
 
-    // --- DATA ---
     let db = { meetings: [], currentProject: 'health', projects: { 'health': { title: 'आरोग्य अभियान', people: [], followups: [], sales: [] }, 'anemia': { title: 'ॲनिमिया मुक्त', people: [], followups: [], sales: [] }, 'water': { title: 'जलसंचय', people: [], followups: [], sales: [] }, 'network': { title: 'नेटवर्क', people: [], followups: [], sales: [] } } };
     let editIndex = null;
     let currentView = 'home';
@@ -387,27 +315,83 @@
         loadFromFirebase();
     };
 
-    // --- FIREBASE SYNC ---
     function loadFromFirebase() {
         dbRef.collection(COL_NAME).doc(DOC_ID).get().then((doc) => {
             if (doc.exists) { db = doc.data(); if(!db.meetings) db.meetings=[]; } else { saveToFirebase(); }
             updateStatus("Online", "success");
         }).catch(() => { updateStatus("Offline", "danger"); }).finally(() => {
             document.getElementById('loadingOverlay').style.display = 'none';
-            renderCalendar(); renderMeetingsList(); checkTodayPopup(); updateDailyStats();
+            renderSmartReminders(); renderCalendar(); renderMeetingsList(); checkTodayPopup(); updateDailyStats();
         });
     }
+
     function saveToFirebase() {
         updateStatus("Saving...", "warning");
         dbRef.collection(COL_NAME).doc(DOC_ID).set(db).then(() => {
             updateStatus("Online", "success");
-            if(currentView === 'planner') { renderCalendar(); renderMeetingsList(); } 
+            if(currentView==='home') renderSmartReminders();
+            else if(currentView === 'planner') { renderCalendar(); renderMeetingsList(); } 
             else if(currentView === 'reports') { renderAllReports(); } 
             else if(currentView !== 'home') renderCurrentView();
             updateDailyStats();
         }).catch(() => updateStatus("Error", "danger"));
     }
     function updateStatus(msg, type) { const b = document.getElementById('statusBadge'); b.innerText = msg; b.className = `badge bg-${type} text-${type==='warning'?'dark':'white'} border px-2 py-1`; }
+
+    // --- SMART REMINDERS (HOME) ---
+    function renderSmartReminders() {
+        const div = document.getElementById('smartReminderSection');
+        const today = new Date().toISOString().split('T')[0];
+        const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+        
+        let listToday = [], listTom = [], listFut = [];
+
+        // 1. Check Meetings
+        db.meetings.forEach(m => {
+            if(m.status === 'Done') return;
+            let item = { type: 'MEET', title: m.title, sub: m.remark || '', date: m.date, time: m.time, mobile: '' };
+            if(m.date === today) listToday.push(item);
+            else if(m.date === tomorrow) listTom.push(item);
+            else if(m.date > tomorrow) listFut.push(item);
+        });
+
+        // 2. Check Followups
+        for(let k in db.projects) {
+            db.projects[k].followups.forEach(f => {
+                f.dates.forEach(d => {
+                    let item = { type: 'CALL', title: f.personName, sub: f.remark, date: d, time: '', mobile: f.mobile };
+                    if(d === today) listToday.push(item);
+                    else if(d === tomorrow) listTom.push(item);
+                    else if(d > tomorrow) listFut.push(item);
+                });
+            });
+        }
+
+        // Render Function
+        const renderCard = (item, cls) => `
+            <div class="reminder-card ${cls}">
+                <span class="rem-time">${item.date} ${item.time}</span>
+                <div class="rem-title">${item.type === 'MEET' ? '🗓️' : '📞'} ${item.title}</div>
+                <div class="rem-sub">${item.sub}</div>
+                ${item.mobile ? `<a href="tel:${item.mobile}" class="rem-btn"><i class="fas fa-phone"></i></a>` : ''}
+            </div>`;
+
+        let html = '';
+        if(listToday.length > 0) {
+            html += `<div class="reminder-group-title text-danger">🔴 आजची कामे (Today)</div>`;
+            listToday.forEach(i => html += renderCard(i, 'rem-today'));
+        }
+        if(listTom.length > 0) {
+            html += `<div class="reminder-group-title text-primary">🔵 उद्याची कामे (Tomorrow)</div>`;
+            listTom.forEach(i => html += renderCard(i, 'rem-tomorrow'));
+        }
+        if(listFut.length > 0) {
+            html += `<div class="reminder-group-title text-success">🟢 पुढील कामे (Upcoming)</div>`;
+            listFut.slice(0, 3).forEach(i => html += renderCard(i, 'rem-future')); // Show only next 3
+        }
+
+        div.innerHTML = html || '<div class="text-center text-muted small mt-2">सध्या कोणतेही काम पेंडिंग नाही! 🎉</div>';
+    }
 
     // --- NAVIGATION ---
     window.openSection = function(sec) {
@@ -424,7 +408,7 @@
         ['listSection', 'followupSection', 'salesSection', 'reportsSection', 'plannerSection'].forEach(id => document.getElementById(id).style.display = 'none');
         document.getElementById('homeSection').style.display = 'block';
         document.getElementById('backBtn').style.display = 'none';
-        renderCalendar(); renderMeetingsList();
+        renderSmartReminders();
     }
     window.switchProject = function(key) {
         db.currentProject = key;
@@ -441,48 +425,38 @@
         if(currentView === 'home' || currentView === 'reports' || currentView === 'planner') return;
         const proj = db.projects[db.currentProject];
         
-        // LIST & SEARCH
         if(currentView === 'list') {
             document.getElementById('listCount').innerText = proj.people.length;
             const container = document.getElementById('personListContainer'); container.innerHTML = '';
             const searchVal = document.getElementById('searchBox').value.toLowerCase();
             proj.people.map((p,i)=>({...p, oIdx:i})).reverse().forEach(p => {
                 if(p.name.toLowerCase().includes(searchVal) || String(p.mobile).includes(searchVal)) {
-                    // NEW CARD UI
                     container.innerHTML += `
-                    <div class="prospect-card">
-                        <div class="prospect-header">
-                            <div class="avatar">${p.name.charAt(0)}</div>
-                            <div class="info">
-                                <h6>${p.name}</h6>
-                                <small><i class="fas fa-map-marker-alt"></i> ${p.village} | 📞 ${p.mobile}</small>
-                                <span class="ref-badge">Ref: ${p.proposer}</span>
-                            </div>
+                    <div class="prospect-card" style="background:white;padding:15px;border-radius:15px;margin-bottom:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);border-left:5px solid var(--primary);">
+                        <div style="display:flex;align-items:center;margin-bottom:10px;">
+                            <div style="width:45px;height:45px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#555;margin-right:15px;">${p.name.charAt(0)}</div>
+                            <div><h6 style="margin:0;font-weight:bold;">${p.name}</h6><small>${p.village} | ${p.mobile}</small></div>
                         </div>
-                        <div class="action-row">
-                            <a href="tel:${p.mobile}" class="btn-act btn-call"><i class="fas fa-phone"></i></a>
-                            <a href="https://wa.me/91${p.mobile}" class="btn-act btn-wa"><i class="fab fa-whatsapp"></i></a>
-                            <button class="btn-act btn-edit" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
-                            <button class="btn-act btn-del" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
+                        <div style="display:flex;justify-content:space-between;border-top:1px solid #eee;padding-top:10px;">
+                            <a href="tel:${p.mobile}" class="btn btn-sm btn-success flex-fill me-1"><i class="fas fa-phone"></i> Call</a>
+                            <a href="https://wa.me/91${p.mobile}" class="btn btn-sm btn-success flex-fill me-1"><i class="fab fa-whatsapp"></i> WA</a>
+                            <button class="btn btn-sm btn-warning me-1" onclick="editPerson(${p.oIdx})"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="delPerson(${p.oIdx})"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>`;
                 }
             });
             loadImportOptions();
         }
-        
-        // FOLLOWUP
+        // ... (Followup/Sales same as previous) ...
         if(currentView === 'followup') {
             const sel = document.getElementById('followupPersonSelect'); sel.innerHTML='<option value="">Select</option>';
             proj.people.forEach((p,i)=> sel.innerHTML+=`<option value="${i}">${p.name}</option>`);
             const h = document.getElementById('followupHistoryList'); h.innerHTML='';
             proj.followups.slice().reverse().forEach(f => {
-                const priority = getPriority(f.dates[0]); // Feature 1
-                const color = priority==='High'?'#dc3545':(priority==='Med'?'#ffc107':'#198754');
-                h.innerHTML+=`<div class="list-item" style="border-left-color:${color}"><div><h6>${f.personName} <span class="badge bg-secondary" style="font-size:10px">${priority}</span></h6><small>${f.remark}</small></div><small class="text-muted">${f.entryDate}</small></div>`;
+                h.innerHTML+=`<div class="list-item" style="border-left-color:var(--saffron)"><div><h6>${f.personName}</h6><small>${f.remark}</small></div><small class="text-muted">${f.entryDate}</small></div>`;
             });
         }
-        // SALES (INVOICE)
         if(currentView === 'sales') {
             const sel = document.getElementById('salePersonSelect'); sel.innerHTML='<option value="">Select</option>';
             proj.people.forEach((p,i)=> sel.innerHTML+=`<option value="${i}">${p.name}</option>`);
@@ -490,32 +464,21 @@
             proj.sales.slice().reverse().forEach(s => {
                 h.innerHTML+=`<div class="list-item" style="border-left-color:var(--green)">
                     <div><h6>${s.personName}</h6><small>${s.product}</small></div>
-                    <div><small class="d-block text-end">${s.date}</small><button class="btn btn-sm btn-outline-dark py-0" onclick='generateInvoice(${JSON.stringify(s)})'>🧾 Bill</button></div>
+                    <div><small class="d-block text-end">${s.date}</small><button class="btn btn-sm btn-outline-dark py-0" onclick='generateInvoice(${JSON.stringify(s)})'>🧾</button></div>
                 </div>`;
             });
         }
     }
 
     // --- PRO FEATURES ---
-    function getPriority(date){ if(!date) return "Low"; const d = new Date(date); const diff = Math.ceil((d - new Date())/(1000*60*60*24)); return diff<=0 ? "High" : (diff<=2 ? "Med" : "Low"); }
-    
     function generateInvoice(sale) {
-        const html = `<div style="text-align:center; padding:10px;">
-            <h3>INVOICE</h3><hr><p><b>Customer:</b> ${sale.personName}</p><p><b>Item:</b> ${sale.product}</p><p><b>Date:</b> ${sale.date}</p><hr><p>Thank you for business!</p></div>`;
+        const html = `<div style="text-align:center; padding:10px;"><h3>INVOICE</h3><hr><p><b>Customer:</b> ${sale.personName}</p><p><b>Item:</b> ${sale.product}</p><p><b>Date:</b> ${sale.date}</p><hr><p>Thank you for business!</p></div>`;
         document.getElementById('invoiceContent').innerHTML = html;
         new bootstrap.Modal(document.getElementById('invoiceModal')).show();
     }
     function printInvoice() { const c = document.getElementById('invoiceContent').innerHTML; const w = window.open(); w.document.write(c); w.print(); w.close(); }
-
-    window.backupAllData = function() {
-        const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
-        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Mission2026_Backup.json"; a.click();
-    }
-    window.restoreBackup = function(file) {
-        const reader = new FileReader();
-        reader.onload = e => { db = JSON.parse(e.target.result); saveToFirebase(); alert("Restored Successfully!"); location.reload(); };
-        reader.readAsText(file);
-    }
+    window.backupAllData = function() { const blob = new Blob([JSON.stringify(db)], {type: "application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Mission2026_Backup.json"; a.click(); }
+    window.restoreBackup = function(file) { const reader = new FileReader(); reader.onload = e => { db = JSON.parse(e.target.result); saveToFirebase(); alert("Restored!"); location.reload(); }; reader.readAsText(file); }
 
     // --- ACTIONS ---
     window.addPerson = function() { const p = {name:document.getElementById('pName').value, mobile:document.getElementById('pMobile').value, village:document.getElementById('pVillage').value, profession:document.getElementById('pProfession').value, proposer:document.getElementById('pProposer').value}; if(!p.name || !p.mobile) return alert("Required"); if(editIndex!==null) db.projects[db.currentProject].people[editIndex]=p; else db.projects[db.currentProject].people.push(p); saveToFirebase(); resetForm(); }
@@ -527,51 +490,29 @@
     window.addFollowup = function() { const i=document.getElementById('followupPersonSelect').value; if(i==="")return; const p=db.projects[db.currentProject].people[i]; let dates=[]; ['fDate1','fDate2','fDate3'].forEach(d=>{if(document.getElementById(d).value)dates.push(document.getElementById(d).value)}); db.projects[db.currentProject].followups.push({personName:p.name,mobile:p.mobile,remark:document.getElementById('fRemark').value,dates:dates,entryDate:new Date().toISOString().split('T')[0]}); saveToFirebase(); alert("Saved"); }
     window.addSale = function() { const i=document.getElementById('salePersonSelect').value; if(i==="")return; const p=db.projects[db.currentProject].people[i]; const pr=document.getElementById('productSelect').value; db.projects[db.currentProject].sales.push({personName:p.name,product:pr,date:document.getElementById('saleDate').value}); saveToFirebase(); alert("Saved"); }
     
-    // --- MEETINGS (SORTED & DELETE) ---
+    // --- MEETINGS ---
     function renderCalendar() { const g=document.getElementById('calendarGrid'); const n=new Date(); document.getElementById('calMonthYear').innerText=n.toLocaleString('default',{month:'long'})+" "+n.getFullYear(); let h=''; ['S','M','T','W','T','F','S'].forEach(d=>h+=`<b>${d}</b>`); for(let i=1;i<=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();i++){ let d=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`; let cls=db.meetings.some(m=>m.date===d)?'cal-event':(i===n.getDate()?'cal-today':'cal-day'); h+=`<div class="${cls}" onclick="openMeetingModal(null,'${d}')">${i}</div>`; } g.innerHTML=h; }
-    
-    function renderMeetingsList() { 
-        const list = document.getElementById('plannerMeetingList'); list.innerHTML = '';
-        const sorted = db.meetings.sort((a,b) => {
-            const map = {'Pending':1,'Postponed':2,'Done':3};
-            return (map[a.status]||4) - (map[b.status]||4);
-        });
-        
-        sorted.forEach(m => {
-            let stClass = `status-${m.status || 'Pending'}`;
-            list.innerHTML += `
-            <div class="meeting-item ${stClass} d-flex justify-content-between align-items-center">
-                <div onclick='openMeetingModal(${JSON.stringify(m)})' style="flex-grow:1">
-                    <div class="d-flex justify-content-between"><strong>${m.title}</strong><span class="badge bg-secondary" style="font-size:10px">${m.status}</span></div>
-                    <small>${m.date} ${m.time||''} | ${m.remark || ''}</small>
-                </div>
-                <button class="btn btn-sm text-danger ms-2" onclick="deleteMeetingDirect(${m.id})"><i class="fas fa-trash"></i></button>
-            </div>`;
-        });
-    }
-    
+    function renderMeetingsList() { const l=document.getElementById('plannerMeetingList'); l.innerHTML=''; const sorted=db.meetings.sort((a,b)=> {const m={'Pending':1,'Postponed':2,'Done':3}; return (m[a.status]||4)-(m[b.status]||4)}); sorted.forEach(m=>{ let st=`status-${m.status||'Pending'}`; l.innerHTML+=`<div class="meeting-item ${st} d-flex justify-content-between align-items-center"><div onclick='openMeetingModal(${JSON.stringify(m)})' style="flex-grow:1"><div class="d-flex justify-content-between"><strong>${m.title}</strong><span class="badge bg-secondary" style="font-size:10px">${m.status}</span></div><small>${m.date} ${m.time||''} | ${m.remark||''}</small></div><button class="btn btn-sm text-danger ms-2" onclick="deleteMeetingDirect(${m.id})"><i class="fas fa-trash"></i></button></div>`; }); }
     function openMeetingModal(m,d) { if(m){document.getElementById('meetId').value=m.id; document.getElementById('meetTitle').value=m.title; document.getElementById('meetDate').value=m.date; document.getElementById('meetTime').value=m.time; document.getElementById('meetStatus').value=m.status; document.getElementById('meetRemark').value=m.remark;} else { document.getElementById('meetId').value=''; document.getElementById('meetTitle').value=''; document.getElementById('meetDate').value=d||''; } new bootstrap.Modal(document.getElementById('meetingModal')).show(); }
     function saveMeeting() { const id=document.getElementById('meetId').value; const obj={id:id?id:Date.now(),title:document.getElementById('meetTitle').value,date:document.getElementById('meetDate').value,time:document.getElementById('meetTime').value,status:document.getElementById('meetStatus').value,remark:document.getElementById('meetRemark').value}; if(!obj.title) return alert("Title?"); if(id){const idx=db.meetings.findIndex(m=>m.id==id);if(idx!==-1)db.meetings[idx]=obj;}else{db.meetings.push(obj);} saveToFirebase(); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
-    
-    window.deleteMeetingDirect = function(id) {
-        if(confirm("Delete Meeting?")) { db.meetings = db.meetings.filter(m => m.id != id); saveToFirebase(); }
-    }
-    function deleteMeeting() { const id=document.getElementById('meetId').value; deleteMeetingDirect(id); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
+    window.deleteMeetingDirect = function(id) { if(confirm("Del?")){db.meetings=db.meetings.filter(m=>m.id!=id); saveToFirebase();} }
+    function deleteMeeting() { deleteMeetingDirect(document.getElementById('meetId').value); bootstrap.Modal.getInstance(document.getElementById('meetingModal')).hide(); }
 
     // --- REPORTS ---
-    function renderAllReports() {
-        let tm=0, ts=0, tc=0; let mr=''; for(let k in db.projects){ tm+=db.projects[k].people.length; ts+=db.projects[k].sales.length; tc+=db.projects[k].followups.length; db.projects[k].people.forEach(p=>{ let s=db.projects[k].sales.filter(x=>x.personName===p.name).length; mr+=`<tr><td>${p.name}</td><td>${db.projects[k].title}</td><td>${p.village}</td><td>${s}</td></tr>`; }); }
-        document.getElementById('repTotalMem').innerText=tm; document.getElementById('repTotalSale').innerText=ts; document.getElementById('tblConsolidated').innerHTML=mr;
-        renderSegmentReport();
-        let mRow=''; db.meetings.forEach(m=>{ mRow+=`<tr><td>${m.date}</td><td>${m.title}</td><td>${m.status}</td><td>${m.remark}</td></tr>`; }); document.getElementById('tblMeetings').innerHTML=mRow;
-    }
+    function renderAllReports() { let tm=0, ts=0; let mr=''; for(let k in db.projects){ tm+=db.projects[k].people.length; ts+=db.projects[k].sales.length; db.projects[k].people.forEach(p=>{ let s=db.projects[k].sales.filter(x=>x.personName===p.name).length; mr+=`<tr><td>${p.name}</td><td>${db.projects[k].title}</td><td>${p.village}</td><td>${s}</td></tr>`; }); } document.getElementById('repTotalMem').innerText=tm; document.getElementById('repTotalSale').innerText=ts; document.getElementById('tblConsolidated').innerHTML=mr; renderSegmentReport(); let mRow=''; db.meetings.forEach(m=>{ mRow+=`<tr><td>${m.date}</td><td>${m.title}</td><td>${m.status}</td><td>${m.remark}</td></tr>`; }); document.getElementById('tblMeetings').innerHTML=mRow; }
+    window.showReportTab=function(t){ ['consolidated','segment','meetings'].forEach(x=>document.getElementById('tab-'+x).style.display='none'); document.getElementById('tab-'+t).style.display='block'; renderAllReports(); }
     window.renderSegmentReport=function(){ const k=document.getElementById('reportSegmentSelect').value; const p=db.projects[k]; document.getElementById('segTotalMem').innerText=p.people.length; document.getElementById('segTotalSale').innerText=p.sales.length; let r=''; p.people.forEach(x=> r+=`<tr><td>${x.name}</td><td>${x.mobile}</td><td>${x.village}</td><td>${x.proposer}</td></tr>`); document.getElementById('tblSegment').innerHTML=r; }
     window.downloadExcel=function(t){ const tbl=(t==='meetings')?'fullTableMeetings':(t==='segment'?'fullTableSegment':'fullTableConsolidated'); const wb=XLSX.utils.table_to_book(document.getElementById(tbl),{sheet:"Data"}); XLSX.writeFile(wb, t+"_Report.xlsx"); }
     window.downloadPDF=function(t){ let id=(t==='meetings')?'tab-meetings':(t==='segment'?'tab-segment':'tab-consolidated'); html2pdf().from(document.getElementById(id)).save(); }
     
     // Updates
     function updateDailyStats() { const today=new Date().toISOString().split('T')[0]; let s=0; for(let k in db.projects) s+=db.projects[k].sales.filter(x=>x.date===today).length; if(s>0) document.getElementById('statusBadge').innerText += ` | Today Sales: ${s}`; }
-    function checkTodayPopup() { const t=new Date().toISOString().split('T')[0]; let l=[]; db.meetings.forEach(m=>{if(m.date===t && m.status!=='Done')l.push(`🗓️ ${m.title}`)}); if(l.length){ document.getElementById('todayPopupBody').innerHTML='<ul class="list-group">'+l.map(x=>`<li class="list-group-item">${x}</li>`).join('')+'</ul>'; new bootstrap.Modal(document.getElementById('todayPopup')).show(); } }
+    function checkTodayPopup() { 
+        const t=new Date().toISOString().split('T')[0]; let l=[]; 
+        db.meetings.forEach(m=>{if(m.date===t && m.status!=='Done')l.push(`🗓️ ${m.title}`)});
+        for(let k in db.projects) db.projects[k].followups.forEach(f=>{f.dates.forEach(d=>{if(d===t)l.push(`📞 ${f.personName}`)})});
+        if(l.length){ document.getElementById('todayPopupBody').innerHTML='<ul class="list-group">'+l.map(x=>`<li class="list-group-item border-0"><i class="fas fa-bell text-warning me-2"></i> ${x}</li>`).join('')+'</ul>'; new bootstrap.Modal(document.getElementById('todayPopup')).show(); } 
+    }
     window.pickContact = async function() { try{const c = await navigator.contacts.select(['name','tel'],{multiple:false}); if(c.length){document.getElementById('pName').value=c[0].name[0]; document.getElementById('pMobile').value=c[0].tel[0];}}catch(e){} }
 </script>
 
